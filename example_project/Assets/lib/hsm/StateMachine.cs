@@ -11,7 +11,7 @@ namespace Hsm {
 		[SerializeField]
 		public State initialState;
 		[SerializeField]
-		private State currentState;
+		public State currentState;
 
 		public StateMachine() {
 		}
@@ -32,6 +32,10 @@ namespace Hsm {
 				initialState = states[0];
 			}
 			_enterState(null, initialState, new Dictionary<string, object>());
+		}
+
+		public void tearDown(State nextState) {
+			currentState._exit(nextState);
 		}
 
 		public StateMachine addState(State pState) {
@@ -56,7 +60,7 @@ namespace Hsm {
 			}
 		}
 
-		private void _enterState(State sourceState, State targetState, Dictionary<string, object> data) {
+		public void _enterState(State sourceState, State targetState, Dictionary<string, object> data) {
 			currentState = targetState;
 			targetState._enter(sourceState, targetState, data);
 		}

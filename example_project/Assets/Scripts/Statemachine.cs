@@ -36,10 +36,11 @@ public class Statemachine : MonoBehaviour {
 			Debug.Log(targetState.id + " -> on_enter (from: " +
 			((sourceState != null) ? sourceState.id : "null") + ")");
 		})
+		.addHandler("off", (data) => {
+			return "off";
+		})
 		.OnExit((nextState) => {
 			Debug.Log("on exit -> " + nextState.id);
-		}).addHandler("off", (data) => {
-			return "off";
 		});
 
 		// Off State

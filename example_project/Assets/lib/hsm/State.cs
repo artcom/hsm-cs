@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System;
 
 namespace Hsm {
-
+	
 	[System.Serializable]
 	public class State {
 		[SerializeField]
