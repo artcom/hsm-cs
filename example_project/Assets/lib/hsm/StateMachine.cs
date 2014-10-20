@@ -9,7 +9,7 @@ namespace Hsm {
 		[SerializeField]
 		public readonly List<State> states = new List<State>();
 		[SerializeField]
-		private State initialState;
+		public State initialState;
 		[SerializeField]
 		private State currentState;
 
@@ -18,6 +18,10 @@ namespace Hsm {
 
 		public StateMachine(List<State> pStates) {
 			states = pStates;
+		}
+
+		public StateMachine(params State[] pStates) {
+			states.AddRange(pStates);
 		}
 
 		public void setup() {
@@ -53,7 +57,6 @@ namespace Hsm {
 		}
 
 		private void _enterState(State sourceState, State targetState, Dictionary<string, object> data) {
-			Debug.Log("enterState: " + targetState.id);
 			currentState = targetState;
 			targetState._enter(sourceState, targetState, data);
 		}
