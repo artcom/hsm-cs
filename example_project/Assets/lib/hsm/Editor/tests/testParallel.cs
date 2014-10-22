@@ -73,8 +73,33 @@ namespace UnitTesting {
 			Expect(_capslockMachine.currentState.id, Is.EqualTo("CapsLockOff"));
 			Expect(_numlockMachine.currentState.id, Is.EqualTo("NumLockOff"));
 
+			// check capslock toggle
 			sm.handleEvent("capslock");
 			Expect(_capslockMachine.currentState.id, Is.EqualTo("CapsLockOn"));
+			Expect(_numlockMachine.currentState.id, Is.EqualTo("NumLockOff"));
+
+			sm.handleEvent("capslock");
+			Expect(_capslockMachine.currentState.id, Is.EqualTo("CapsLockOff"));
+			Expect(_numlockMachine.currentState.id, Is.EqualTo("NumLockOff"));
+
+			// check numlock toggle
+			sm.handleEvent("numlock");
+			Expect(_capslockMachine.currentState.id, Is.EqualTo("CapsLockOff"));
+			Expect(_numlockMachine.currentState.id, Is.EqualTo("NumLockOn"));
+
+			// now unplug keyboard
+			sm.handleEvent("unplug");
+			Expect(sm.currentState.id, Is.EqualTo("KeyboardOff"));
+
+			// pressing capslock while unplugged does nothing
+			sm.handleEvent("capslock");
+			Expect(sm.currentState.id, Is.EqualTo("KeyboardOff"));
+
+			// plug the keyboard back in and check whether the toggles are back at their initial states
+			sm.handleEvent("plug");
+			Expect(sm.currentState.id, Is.EqualTo("KeyboardOn"));
+			Expect(_capslockMachine.currentState.id, Is.EqualTo("CapsLockOff"));
+			Expect(_numlockMachine.currentState.id, Is.EqualTo("NumLockOff"));
 		}
 	}
 }
