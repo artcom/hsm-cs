@@ -64,7 +64,6 @@ namespace Hsm {
 			}
 
 			if (!currentState.handlers.ContainsKey(evt)) {
-				Debug.LogWarning("unhandled event " + evt + " in state " + currentState.id);
 				return false;
 			}
 			string result = currentState.handlers[evt].Invoke(data);
@@ -77,13 +76,11 @@ namespace Hsm {
 		}
 
 		public void _enterState(State sourceState, State targetState, Dictionary<string, object> data) {
-			//Debug.Log("StateMachine._enterState -- targetState: " + targetState);
 			currentState = targetState;
 			targetState._enter(sourceState, targetState, data);
 		}
 
 		private void _switchState(State sourceState, State targetState, Dictionary<string, object> data) {
-			//Debug.Log("StateMachine._switchState -- targetState: " + targetState);
 			sourceState._exit(targetState);
 			_enterState(sourceState, targetState, data);
 		}
