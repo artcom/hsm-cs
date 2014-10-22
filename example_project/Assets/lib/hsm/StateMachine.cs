@@ -63,12 +63,7 @@ namespace Hsm {
 		public void _enterState(State sourceState, State targetState, Dictionary<string, object> data) {
 			//Debug.Log("StateMachine._enterState -- targetState: " + targetState);
 			currentState = targetState;
-			Sub myTargetState = targetState as Sub;
-			if (myTargetState != null) {
-				myTargetState._enter (sourceState, myTargetState, data);
-			} else {
-				targetState._enter(sourceState, targetState, data);
-			}
+			targetState._enter(sourceState, targetState, data);
 		}
 
 		private void _switchState(State sourceState, State targetState, Dictionary<string, object> data) {
