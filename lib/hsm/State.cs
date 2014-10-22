@@ -1,50 +1,50 @@
-﻿using UnityEngine;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System;
+using UnityEngine;
 
 namespace Hsm {
+
+	public static class ExtensionMethods {
+		public static T OnExit<T>(this T state, Action<State> action) where T : State {
+			state.exitAction = action;
+			return state;
+		}
+
+		public static T OnEnter<T>(this T state, Action<State, State> action) where T : State {
+			state.enterAction = action;
+			return state;
+		}
+
+		public static T addHandler<T>(this T state, string evt, Func<Dictionary<string, object>, String> handler) where T : State {
+			state.handlers[evt] = handler;
+			return state;
+		}
+	}
 
 	[System.Serializable]
 	public class State {
 		[SerializeField]
 		public string id;
-		
-		private Action<State, State> enterAction = null;
-		private Action<State> exitAction = null;
-		
-		public Dictionary<string, Func<Dictionary<string, object>, String>> handlers; // = new Dictionary<string, Action>();
-		
+		public Action<State, State> enterAction = null;
+		public Action<State> exitAction = null;
+		public Dictionary<string, Func<Dictionary<string, object>, String>> handlers; 
+
 		public State(string pId) {
 			this.handlers = new Dictionary<string, Func<Dictionary<string, object>, String>>();
 			id = pId;
 		}
 		
-		public State addHandler(string evt, Func<Dictionary<string, object>, String> handler) {
-			handlers[evt] = handler;
-			return this;
-		}
-		
-		public void _enter(State sourceState, State targetstate, Dictionary<string, object> data) {
+		public virtual void _enter(State sourceState, State targetstate, Dictionary<string, object> data) {
 			if (enterAction != null) {
 				enterAction.Invoke(sourceState, targetstate);
 			}
 		}
 		
-		public void _exit(State nextstate) {
+		public virtual void _exit(State nextstate) {
 			if (exitAction != null) {
 				exitAction.Invoke(nextstate);
 			}
-		}
-		
-		public State OnEnter(Action<State, State> action) {
-			enterAction = action;
-			return this;
-		}
-		
-		public State OnExit(Action<State> action) {
-			exitAction = action;
-			return this;
 		}
 	}
 
