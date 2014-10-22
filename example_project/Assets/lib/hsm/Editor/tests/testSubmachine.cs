@@ -26,8 +26,12 @@ namespace UnitTesting {
 				new State("off").addHandler("on", (data) => { return "on"; })
 			))
 			.addHandler("power_off", (data) => { return "powered_off"; })
-			.OnEnter((s, t) => {})
-			.OnExit((n) => {});
+			.OnEnter((s, t) => {
+				/// Debug.Log(s);
+			})
+			.OnExit((n) => {
+				// Debug.Log(n);
+			});
 			StateMachine sm = new StateMachine(
 				new State("powered_off").addHandler("power_on", (data) => { return "powered_on"; }),
 				powered_on_sub
@@ -39,10 +43,9 @@ namespace UnitTesting {
 			Expect(sm.currentState.id, Is.EqualTo("powered_on"));
 			Sub sub = sm.currentState as Sub;
 
-			Debug.Log(sub.submachine.currentState);
 			Expect(sub.submachine.currentState, Is.Not.Null);
+			Expect(sub.submachine.currentState.id, Is.EqualTo("on"));
 
-			Expect(sub.submachine.currentState.id, Is.EqualTo("foo"));
 		}
 
 	}

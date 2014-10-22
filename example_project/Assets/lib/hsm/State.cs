@@ -36,6 +36,7 @@ namespace Hsm {
 		}
 		
 		public void _enter(State sourceState, State targetstate, Dictionary<string, object> data) {
+			// Debug.Log("State._enter -- targetState: " + targetstate + " id: " + this.id); 
 			if (enterAction != null) {
 				enterAction.Invoke(sourceState, targetstate);
 			}

@@ -13,12 +13,13 @@ namespace Hsm {
 			submachine = theSubmachine;
 		}
 
-		private new void _enter(State sourceState, State targetstate, Dictionary<string, object> data) {
+		public new void _enter(State sourceState, State targetstate, Dictionary<string, object> data) {
+			//Debug.Log("Sub._enter -- targetState: " + targetstate + " this: " + this.id); 
 			base._enter(sourceState, targetstate, data);
-			submachine._enterState(sourceState, targetstate, data);
+			submachine.setup();
 		}
 
-		private new void _exit(State nextState) {
+		public new void _exit(State nextState) {
 			base._exit(nextState);
 			submachine.tearDown(null);
 		}
