@@ -10,6 +10,10 @@ namespace Hsm {
 			submachine = theSubmachine;
 		}
 
+		public bool _handle(string evt, Dictionary<string, object> data) {
+			return submachine._handle(evt, data);
+		}
+
 		public override void _enter(State sourceState, State targetstate, Dictionary<string, object> data) {
 			base._enter(sourceState, targetstate, data);
 			submachine.setup();

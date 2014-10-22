@@ -49,15 +49,31 @@ namespace Hsm {
 		}
 
 		public void handleEvent(string evt, Dictionary<string, object> data) {
+			// TODO: Add support for Run-To-Completion Model
+			_handle(evt, data);
+		}
+
+		public bool _handle(string evt, Dictionary<string, object> data) {
+			// check if current state is a (nested) statemachine, if so, give it the event.
+			// if it handles the event, stop processing here.
+			if (currentState is Sub /*|| currentState is Parallel*/) {
+				Sub mySub = currentState as Sub;
+				if (mySub._handle(evt, data)) {
+					return true;
+				}
+			}
+
 			if (!currentState.handlers.ContainsKey(evt)) {
 				Debug.LogWarning("unhandled event " + evt + " in state " + currentState.id);
-				return;
+				return false;
 			}
 			string result = currentState.handlers[evt].Invoke(data);
 			State nextstate = states.Find(state => state.id == result);
 			if (nextstate != null) {
 				_switchState(currentState, nextstate, data);
+				return true;
 			}
+			return false;
 		}
 
 		public void _enterState(State sourceState, State targetState, Dictionary<string, object> data) {
