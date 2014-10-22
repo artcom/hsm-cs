@@ -35,22 +35,46 @@ namespace UnitTesting {
 
 		[Test]
 		public void Keyboard() {
+			StateMachine _numlockMachine = new StateMachine(
+				new State("NumLockOff").addHandler("numlock", (data) => {
+					return "NumLockOn";
+				}),
+				new State("NumLockOn").addHandler("numlock", (data) => {
+					return "NumLockOff";
+				})
+			);
+			StateMachine _capslockMachine = new StateMachine(
+				new State("CapsLockOff").addHandler("capslock", (data) => {
+					return "CapsLockOn";
+				}),
+				new State("CapsLockOn").addHandler("capslock", (data) => {
+					return "CapsLockOff";
+				})
+			);
+				
 			Parallel keyBoardOnState = new Parallel("KeyboardOn", new[] {
-				new StateMachine(
-					new State("NumLockOff"),
-					new State("NumLockOn")
-				),
-				new StateMachine(
-					new State("CapsLockOn"),
-					new State("CapsLockOff")
-				)
+				_capslockMachine,
+				_numlockMachine
+			}).addHandler("unplug", (data) => {
+				return "KeyboardOff";
 			});
 
 			StateMachine sm = new StateMachine(
-				new State("KeyboardOff"), 
+				new State("KeyboardOff").addHandler("plug", (data) => {
+					return "KeyboardOn";
+				}), 
 				keyBoardOnState
 			);
 			sm.setup();
+
+			Expect(sm.currentState.id, Is.EqualTo("KeyboardOff"));
+			sm.handleEvent("plug");
+			Expect(sm.currentState.id, Is.EqualTo("KeyboardOn"));
+			Expect(_capslockMachine.currentState.id, Is.EqualTo("CapsLockOff"));
+			Expect(_numlockMachine.currentState.id, Is.EqualTo("NumLockOff"));
+
+			sm.handleEvent("capslock");
+			Expect(_capslockMachine.currentState.id, Is.EqualTo("CapsLockOn"));
 		}
 	}
 }
