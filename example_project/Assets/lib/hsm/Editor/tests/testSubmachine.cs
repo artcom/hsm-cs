@@ -40,8 +40,17 @@ namespace UnitTesting {
 			Expect(sm.currentState.id, Is.EqualTo("OnState"));
 			Sub sub = sm.currentState as Sub;
 			Expect(sub.submachine.currentState.id, Is.EqualTo("Quiet"));
+
 			sm.handleEvent("volume_up");
 			Expect(sub.submachine.currentState.id, Is.EqualTo("Loud"));
+
+			sm.handleEvent("switched_off");
+			Expect(sm.currentState.id, Is.EqualTo("OffState"));
+
+			sm.handleEvent("switched_on");
+			Expect(sm.currentState.id, Is.EqualTo("OnState"));
+			sub = sm.currentState as Sub;
+			Expect(sub.submachine.currentState.id, Is.EqualTo("Quiet"));
 		}
 
 		[Test]
