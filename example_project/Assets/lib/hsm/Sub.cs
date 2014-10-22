@@ -1,7 +1,4 @@
-﻿using UnityEngine;
-using System.Collections;
-using System.Collections.Generic;
-using System;
+﻿using System.Collections.Generic;
 
 namespace Hsm {
 
@@ -14,7 +11,6 @@ namespace Hsm {
 		}
 
 		public override void _enter(State sourceState, State targetstate, Dictionary<string, object> data) {
-			//Debug.Log("Sub._enter -- targetState: " + targetstate + " this: " + this.id); 
 			base._enter(sourceState, targetstate, data);
 			submachine.setup();
 		}

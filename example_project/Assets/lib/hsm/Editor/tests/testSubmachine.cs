@@ -1,10 +1,5 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Threading;
+﻿using Hsm;
 using NUnit.Framework;
-using UnityEngine;
-using Hsm;
 
 namespace UnitTesting {
 	
@@ -17,6 +12,36 @@ namespace UnitTesting {
 			Expect(sub.id, EqualTo("sub"));
 			Expect(sub, Is.InstanceOf<State>());
 			Expect(sub, Is.InstanceOf<Sub>());
+		}
+
+		[Test]
+		public void QuietLoud() {
+			Sub onState = new Sub("OnState", new StateMachine(
+				new State("Quiet")
+					.addHandler("volume_up", (data) => {
+						return "Loud";
+					}
+				),
+				new State("Loud")
+					.addHandler("volume_down", (data) => {
+						return "Quiet";
+					}
+				)
+			))
+				.addHandler("switched_off", (data) => { return "OffState"; }); 
+			State offState = new State("OffState")
+				.addHandler("switched_on", (data) => { return "OnState"; });
+
+			StateMachine sm = new StateMachine(offState, onState);
+			sm.setup();
+
+			Expect(sm.currentState.id, Is.EqualTo("OffState"));
+			sm.handleEvent("switched_on");
+			Expect(sm.currentState.id, Is.EqualTo("OnState"));
+			Sub sub = sm.currentState as Sub;
+			Expect(sub.submachine.currentState.id, Is.EqualTo("Quiet"));
+			sm.handleEvent("volume_up");
+			Expect(sub.submachine.currentState.id, Is.EqualTo("Loud"));
 		}
 
 		[Test]
@@ -45,7 +70,6 @@ namespace UnitTesting {
 
 			Expect(sub.submachine.currentState, Is.Not.Null);
 			Expect(sub.submachine.currentState.id, Is.EqualTo("on"));
-
 		}
 
 	}

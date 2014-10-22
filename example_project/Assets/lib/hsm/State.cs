@@ -1,7 +1,7 @@
-﻿using UnityEngine;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System;
+using UnityEngine;
 
 namespace Hsm {
 
@@ -36,7 +36,6 @@ namespace Hsm {
 		}
 		
 		public virtual void _enter(State sourceState, State targetstate, Dictionary<string, object> data) {
-			// Debug.Log("State._enter -- targetState: " + targetstate + " id: " + this.id); 
 			if (enterAction != null) {
 				enterAction.Invoke(sourceState, targetstate);
 			}
