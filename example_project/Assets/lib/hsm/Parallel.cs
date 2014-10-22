@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 
 namespace Hsm {
-	public class Parallel : State {
+	public class Parallel : State, INestedState {
 		public List<StateMachine> submachines = new List<StateMachine>();
 		
 		public Parallel(string theId, List<StateMachine> theSubmachines) : base (theId) {

@@ -2,7 +2,7 @@
 
 namespace Hsm {
 
-	public class Sub : State {
+	public class Sub : State, INestedState {
 
 		public StateMachine submachine;
 

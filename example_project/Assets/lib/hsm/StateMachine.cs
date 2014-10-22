@@ -56,15 +56,9 @@ namespace Hsm {
 		public bool _handle(string evt, Dictionary<string, object> data) {
 			// check if current state is a (nested) statemachine, if so, give it the event.
 			// if it handles the event, stop processing here.
-			if (currentState is Sub ) {
-				Sub mySub = currentState as Sub;
-				if (mySub._handle(evt, data)) {
-					return true;
-				}
-			}
-			if (currentState is Parallel) {
-				Parallel myParallel = currentState as Parallel;
-				if (myParallel._handle(evt, data)) {
+			if (currentState is INestedState) {
+				INestedState nested = currentState as INestedState;
+				if (nested._handle(evt, data)) {
 					return true;
 				}
 			}
