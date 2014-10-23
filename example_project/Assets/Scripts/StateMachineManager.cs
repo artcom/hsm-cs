@@ -6,10 +6,11 @@ using System.Collections.Generic;
 
 using Hsm;
 
-public class Statemachine : MonoBehaviour {
+public class StateMachineManager : MonoBehaviour {
 
 	public Text debugText;
-	[SerializeField]
+
+	//[SerializeField]
 	public StateMachine sm;
 
 	void Start() {
@@ -23,7 +24,8 @@ public class Statemachine : MonoBehaviour {
 		})
 		.OnExit((nextState) => {
 			Debug.Log("idle exit -> " + nextState.id);
-		}).addHandler("start", (data) => {
+		})
+		.addHandler("start", (data) => {
     	    if (data.ContainsKey("powered") && data["powered"].Equals(true)) {
 			    return "off";
 			}
@@ -51,7 +53,8 @@ public class Statemachine : MonoBehaviour {
 		})
 		.OnExit((nextState) => {
 			Debug.Log("on on_exit -> " + nextState.id);
-		}).addHandler("on", (data) => {
+		})
+		.addHandler("on", (data) => {
 			return "on";
 		});
 		
