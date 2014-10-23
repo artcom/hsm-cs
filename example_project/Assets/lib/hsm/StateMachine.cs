@@ -15,9 +15,15 @@ namespace Hsm {
 
 		private bool eventInProgress = false;
 
+		// For storing incoming events.
 		struct Event {
 			public string evt;
 			public Dictionary<string, object> data;
+
+			public Event(string evt, Dictionary<string, object> data) {
+				this.evt = evt;
+				this.data = data;
+			}
 		}
 		private Queue<Event> eventQueue = new Queue<Event>();
 
@@ -55,9 +61,7 @@ namespace Hsm {
 
 		public void handleEvent(string evt, Dictionary<string, object> data) {
 			// TODO: Add support for Run-To-Completion Model
-			Event myEvent = new Event();
-			myEvent.evt = evt;
-			myEvent.data = data;
+			Event myEvent = new Event(evt, data);
 
 			eventQueue.Enqueue(myEvent);
 
