@@ -110,18 +110,13 @@ namespace UnitTesting {
 			sm.handleEvent("T2");
 			Expect(sm.currentState.id, Is.EqualTo("a"));
 			sub = sm.currentState as Sub;
-			Expect(sub.submachine.currentState.id, Is.EqualTo("a3"));
-
-			// log should be:
-			/*  ["a2:exited(target:a3)",
-			     "a3:entered(source:a2)",
-				 "a3:exited(target:a1)",
-				 "a1:entered(source:a3"
-				]
-			*/
-			foreach(string el in log) {
-				Debug.Log(el);
-			}
+			Expect(sub.submachine.currentState.id, Is.EqualTo("a1"));
+			Expect(log, Is.EqualTo(new[] {
+				"a2:exited(target:a3)",
+				"a3:entered(source:a2)",
+				"a3:exited(target:a1)",
+				"a1:entered(source:a3)"})
+			);
 		}
 	}
 }

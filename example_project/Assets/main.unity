@@ -310,6 +310,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   debugText: {fileID: 520938968}
   sm:
+    states: []
     initialState:
       id: 
     currentState:
