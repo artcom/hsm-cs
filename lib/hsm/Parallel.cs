@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 
 namespace Hsm {
-	public class Parallel : State {
+	public class Parallel : State, INestedState {
 		public List<StateMachine> submachines = new List<StateMachine>();
 		
 		public Parallel(string theId, List<StateMachine> theSubmachines) : base (theId) {
@@ -25,9 +25,10 @@ namespace Hsm {
 			return handled;
 		}
 
-		/*public void addStateMachine(StateMachine theStateMachine) {
+		public Parallel addStateMachine(StateMachine theStateMachine) {
 			submachines.Add(theStateMachine);
-		}*/
+			return this;
+		}
 
 		public override void _enter(State sourceState, State targetstate, Dictionary<string, object> data) {
 			base._enter(sourceState, targetstate, data);

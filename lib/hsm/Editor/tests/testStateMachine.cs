@@ -46,8 +46,12 @@ namespace UnitTesting {
 			Expect(statemachine_from_arguments.states[2].id, Is.EqualTo("krokodil"));
 
 			// Empty at construction time
-			StateMachine intially_empty = new StateMachine();
-			Debug.Log(intially_empty);
+			StateMachine initially_empty = new StateMachine();
+			Expect(initially_empty, Is.InstanceOf<StateMachine>());
+			Expect(initially_empty.states.Count, Is.EqualTo(0));
+			initially_empty.addState(new State("foo"));
+			initially_empty.addState(new State("bar"));
+			Expect(initially_empty.states.Count, Is.EqualTo(2));
 		}
 
 		[Test]

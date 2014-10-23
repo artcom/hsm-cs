@@ -56,15 +56,14 @@ namespace Hsm {
 		public bool _handle(string evt, Dictionary<string, object> data) {
 			// check if current state is a (nested) statemachine, if so, give it the event.
 			// if it handles the event, stop processing here.
-			if (currentState is Sub /*|| currentState is Parallel*/) {
-				Sub mySub = currentState as Sub;
-				if (mySub._handle(evt, data)) {
+			if (currentState is INestedState) {
+				INestedState nested = currentState as INestedState;
+				if (nested._handle(evt, data)) {
 					return true;
 				}
 			}
-
+			
 			if (!currentState.handlers.ContainsKey(evt)) {
-				// Debug.LogWarning("unhandled event " + evt + " in state " + currentState.id);
 				return false;
 			}
 			string result = currentState.handlers[evt].Invoke(data);
@@ -77,13 +76,11 @@ namespace Hsm {
 		}
 
 		public void _enterState(State sourceState, State targetState, Dictionary<string, object> data) {
-			//Debug.Log("StateMachine._enterState -- targetState: " + targetState);
 			currentState = targetState;
 			targetState._enter(sourceState, targetState, data);
 		}
 
 		private void _switchState(State sourceState, State targetState, Dictionary<string, object> data) {
-			//Debug.Log("StateMachine._switchState -- targetState: " + targetState);
 			sourceState._exit(targetState);
 			_enterState(sourceState, targetState, data);
 		}
