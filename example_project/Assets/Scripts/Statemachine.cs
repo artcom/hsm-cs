@@ -1,5 +1,5 @@
 ﻿using UnityEngine;
-using UnityEditor;
+//using UnityEditor;
 using UnityEngine.UI;
 using System.Collections;
 using System.Collections.Generic;
@@ -79,7 +79,7 @@ public class Statemachine : MonoBehaviour {
 	}
 }
 
-
+/*
 [CustomPropertyDrawer(typeof(Statemachine))]
 public class StateMachineDrawer : PropertyDrawer {
 
@@ -116,3 +116,4 @@ public class StateMachineDrawer : PropertyDrawer {
 		}
 	}
 }
+*/
