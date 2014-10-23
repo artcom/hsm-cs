@@ -7,14 +7,11 @@ namespace Hsm {
 	[System.Serializable]
 	public class StateMachine {
 		[SerializeField]
-		public readonly List<State> states = new List<State>();
+		public List<State> states = new List<State>();
 		[SerializeField]
 		public State initialState;
 		[SerializeField]
 		public State currentState;
-
-		public StateMachine() {
-		}
 
 		public StateMachine(List<State> pStates) {
 			states = pStates;
