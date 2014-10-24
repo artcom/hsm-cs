@@ -10,15 +10,15 @@ The Hsm follows the [UML-Statemachine](http://en.wikipedia.org/wiki/UML_state_ma
 
 The following state machine is used [in the tests](lib/hsm/Editor/tests):
 
-![image](doc/advanced.png)
+![image](doc/exports/advanced.png)
 
 # States and State Machines
 
 States are specific by creating Hsm.State instances. They are then composed to a state machine by passing them to the Hsm.StateMachine constructor.
 
-![image](doc/simple.png)
+![image](doc/exports/simple.png)
 
-```
+~~~
 using Hsm;
 
 State a1 = new State("a1");
@@ -26,11 +26,11 @@ State a2 = new State("a2");
 State a3 = new State("a3");
 
 StateMachine a = new StateMachine(a1, a2, a3);
-```
+~~~
 
-Alternatively the state machine can also be constructed in several other way. For more details see the [Instantiate*-tests](lib/hsm/Editor/tests/testStateMachine.cs): 
+Alternatively the state machine can also be constructed in several other way. For more details see the [Instantiate*-tests](lib/hsm/Editor/tests/testStateMachine.cs):
 
-```
+~~~
 using Hsm;
 
 // one big constuctor
@@ -51,15 +51,13 @@ StateMachine a = new StateMachine()
 .addState(new State("a1"))
 .addState(new State("a2"))
 .addState(new State("a3"));
-  
-
-```
+~~~
 
 By Convention, the first state passed is the initial state. The state machine is then initialized by
 
-```
+~~~~
 a.setup();
-```
+~~~~
 
 This starts the state machine and activates the initial state, calling its enter handler (see below). The state machine is now ready to handle events.
 
@@ -67,13 +65,13 @@ This starts the state machine and activates the initial state, calling its enter
 
 Each state has a map of event handlers. These handlers will be called when the state receives the respective event. Event handlers are added to the handlers list of each state (based on previous example state machine `a`):
 
-![image](doc/simpleWithTransition.png)
+![image](doc/exports/simpleWithTransition.png)
 
-```
+~~~
 a3.addHandler("T3", (data) => {
     return "a1";
 });
-```
+~~~
 
 This version of Hsm does only support simple event handlers. In the state machine terminology it can be said that only actions are supported.
 
@@ -89,7 +87,7 @@ Each state can have an `exitAction` and an `enterAction`. They will be invoked w
 
 Example of specifying enter/exit actions (using chaining):
 
-```
+~~~
 using Hsm;
 
 State a = new State("a")
@@ -99,7 +97,7 @@ State a = new State("a")
 .OnEnter((sourceState, targetState) => {
     // your code here
 });
-```
+~~~
 
 # Sub-StateMachines (nested)
 
@@ -107,9 +105,9 @@ StateMachines can be nested in other state machines by using the `Hsm.Sub` adapt
 
 All events are propagated into the sub-state machines, and the sub state machine is initialed and torn down on enter/exit of its containing state.
 
-![image](doc/simpleSub.png)
+![image](doc/exports/simpleSub.png)
 
-```
+~~~
 using Hsm;
 
 Sub a = new Sub("a", new StateMachine(
@@ -117,7 +115,7 @@ Sub a = new Sub("a", new StateMachine(
     new State(a2),
     new State(a3)
 ));
-```
+~~~
 
 For more details on how to construct a Hsm.Sub consult the [tests](lib/hsm/Editor/tests/testSubmachine.cs).
 
@@ -131,9 +129,9 @@ Parallel state machines are constructed with the Hsm.Parallel adapter class.
 
 All events are propagated to all contained orthogonal state machines contained in the Hsm.Parallel. An events is treated as handled as soon as one of those state machines handles an event (returns `true`).
 
-![image](doc/simpleParallel.png)
+![image](doc/exports/simpleParallel.png)
 
-```
+~~~
 using Hsm;
 
 Parallel c = new Parallel("c",
@@ -146,7 +144,7 @@ Parallel c = new Parallel("c",
         new State("c22")
     )
 );
-```
+~~~
 
 For more details on how to construct a Hsm.Parallel consult the [tests](lib/hsm/Editor/tests/testParallel.cs).
 
@@ -162,3 +160,17 @@ Internal, External and Local Transitions are currently not implemented. For insp
 Event deferral is currently not implemented. For inspiration on what this could look like see:
 
 * [Event deferral](http://en.wikipedia.org/wiki/UML_state_machine#Event_deferral)
+
+# Development Setup
+
+## Generating API documentation
+
+* *Requires* `doxygen` (e.g. `brew install doxygen` on OS X)
+
+Execute
+
+~~~
+doxygen doc/doxygen/doxygenConfig
+~~~
+
+to generate html documentation. It will be put at `doc/generated/html`
