@@ -1,6 +1,6 @@
 {
   "name": "hsm",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "authors": [
     "Andreas Marr <andreasm@artcom.de>"
   ],
@@ -13,7 +13,9 @@
   "homepage": "www.artcom.de",
   "ignore": [
     "**/.*",
-    "bower.json"
+    "bower.json",
+    "doc",
+    "example_project"
   ],
   "dependencies": {
   }
