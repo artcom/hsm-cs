@@ -10,7 +10,7 @@ The Hsm follows the [UML-Statemachine](http://en.wikipedia.org/wiki/UML_state_ma
 
 The following state machine is used [in the tests](lib/hsm/Editor/tests):
 
-![image](lib/hsm/Editor/tests/advanced.png)
+![image](doc/advanced.png)
 
 # States and State Machines
 
