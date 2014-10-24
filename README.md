@@ -165,7 +165,7 @@ Event deferral is currently not implemented. For inspiration on what this could 
 
 ## Generating API documentation
 
-* *Requires* `doxygen` (e.g. `brew install doxygen` on OS X)
+* *Requires* `doxygen` & `graphviz` (e.g. `brew install doxygen graphviz` on OS X)
 
 Execute
 
