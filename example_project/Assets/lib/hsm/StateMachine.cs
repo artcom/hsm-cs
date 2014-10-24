@@ -60,11 +60,8 @@ namespace Hsm {
 		}
 
 		public void handleEvent(string evt, Dictionary<string, object> data) {
-			// TODO: Add support for Run-To-Completion Model
 			Event myEvent = new Event(evt, data);
-
 			eventQueue.Enqueue(myEvent);
-
 			if (eventInProgress == true) {
 				// EnQueue
 			} else {

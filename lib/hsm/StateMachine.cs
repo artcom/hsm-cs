@@ -7,14 +7,25 @@ namespace Hsm {
 	[System.Serializable]
 	public class StateMachine {
 		[SerializeField]
-		public readonly List<State> states = new List<State>();
+		public List<State> states = new List<State>();
 		[SerializeField]
 		public State initialState;
 		[SerializeField]
 		public State currentState;
 
-		public StateMachine() {
+		private bool eventInProgress = false;
+
+		// For storing incoming events.
+		struct Event {
+			public string evt;
+			public Dictionary<string, object> data;
+
+			public Event(string evt, Dictionary<string, object> data) {
+				this.evt = evt;
+				this.data = data;
+			}
 		}
+		private Queue<Event> eventQueue = new Queue<Event>();
 
 		public StateMachine(List<State> pStates) {
 			states = pStates;
@@ -49,8 +60,20 @@ namespace Hsm {
 		}
 
 		public void handleEvent(string evt, Dictionary<string, object> data) {
-			// TODO: Add support for Run-To-Completion Model
-			_handle(evt, data);
+			Event myEvent = new Event(evt, data);
+			eventQueue.Enqueue(myEvent);
+			if (eventInProgress == true) {
+				// EnQueue
+			} else {
+				// DeQueue
+				eventInProgress = true;
+				Event curEvent;
+				while (eventQueue.Count > 0) {
+					curEvent = eventQueue.Dequeue();
+					_handle(curEvent.evt, curEvent.data);
+				}
+				eventInProgress = false;
+			}
 		}
 
 		public bool _handle(string evt, Dictionary<string, object> data) {

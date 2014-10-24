@@ -10,14 +10,20 @@ namespace UnitTesting {
 		[Test]
 		public void Instantiation() {
 			// Supply parallel statemachines as List
-			Parallel par = new Parallel("par", new List<StateMachine>(){ new StateMachine(), new StateMachine() });
+			Parallel par = new Parallel("par", new List<StateMachine>(){
+				new StateMachine(),
+				new StateMachine()
+			});
 			Expect(par.id, Is.EqualTo("par"));
 			Expect(par, Is.InstanceOf<State>());
 			Expect(par, Is.InstanceOf<Parallel>());
 			Expect(par.submachines.Count, Is.EqualTo(2));
 
 			// Supply parallel statemachines as Array
-			par = new Parallel("par", new[] { new StateMachine(), new StateMachine() });
+			par = new Parallel("par", new[] {
+				new StateMachine(),
+				new StateMachine()
+			});
 			Expect(par.id, Is.EqualTo("par"));
 			Expect(par, Is.InstanceOf<State>());
 			Expect(par, Is.InstanceOf<Parallel>());

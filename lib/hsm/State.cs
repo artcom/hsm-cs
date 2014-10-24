@@ -16,7 +16,7 @@ namespace Hsm {
 			return state;
 		}
 
-		public static T addHandler<T>(this T state, string evt, Func<Dictionary<string, object>, String> handler) where T : State {
+		public static T addHandler<T>(this T state, string evt, Func<Dictionary<string, object>, string> handler) where T : State {
 			state.handlers[evt] = handler;
 			return state;
 		}
@@ -28,13 +28,13 @@ namespace Hsm {
 		public string id;
 		public Action<State, State> enterAction = null;
 		public Action<State> exitAction = null;
-		public Dictionary<string, Func<Dictionary<string, object>, String>> handlers; 
+		public Dictionary<string, Func<Dictionary<string, object>, string>> handlers =
+			new Dictionary<string, Func<Dictionary<string, object>, string>>();
 
 		public State(string pId) {
-			this.handlers = new Dictionary<string, Func<Dictionary<string, object>, String>>();
 			id = pId;
 		}
-		
+
 		public virtual void _enter(State sourceState, State targetstate, Dictionary<string, object> data) {
 			if (enterAction != null) {
 				enterAction.Invoke(sourceState, targetstate);

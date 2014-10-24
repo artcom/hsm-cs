@@ -11,7 +11,6 @@ namespace UnitTesting {
 	[TestFixture]
 	internal class StateMachineTests : AssertionHelper {
 
-		
 		[Test]
 		public void InstantiateEmpty() {
 			StateMachine statemachine = new StateMachine();
