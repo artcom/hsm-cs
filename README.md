@@ -14,7 +14,9 @@ The following state machine is used [in the tests](lib/hsm/Editor/tests):
 
 # States and State Machines
 
-States are specific by creating Hsm.State instances. They are then composed to a state machine by passing them to the Hsm.StateMachine constructor:
+States are specific by creating Hsm.State instances. They are then composed to a state machine by passing them to the Hsm.StateMachine constructor.
+
+![image](doc/simple.png)
 
 ```
 using Hsm;
@@ -63,7 +65,9 @@ This starts the state machine and activates the initial state, calling its enter
 
 # Actions and State Transitions
 
-Each state has a map of event handlers. These handlers will be called when the state receives the respective event. Event handlers are added to the handlers list of each state by calling:
+Each state has a map of event handlers. These handlers will be called when the state receives the respective event. Event handlers are added to the handlers list of each state (based on previous example state machine `a`):
+
+![image](doc/simpleWithTransition.png)
 
 ```
 a3.addHandler("T3", (data) => {
@@ -103,6 +107,8 @@ StateMachines can be nested in other state machines by using the `Hsm.Sub` adapt
 
 All events are propagated into the sub-state machines, and the sub state machine is initialed and torn down on enter/exit of its containing state.
 
+![image](doc/simpleSub.png)
+
 ```
 using Hsm;
 
@@ -124,6 +130,8 @@ LCA is currently not implemented. For inspiration on what this could look like s
 Parallel state machines are constructed with the Hsm.Parallel adapter class.
 
 All events are propagated to all contained orthogonal state machines contained in the Hsm.Parallel. An events is treated as handled as soon as one of those state machines handles an event (returns `true`).
+
+![image](doc/simpleParallel.png)
 
 ```
 using Hsm;
