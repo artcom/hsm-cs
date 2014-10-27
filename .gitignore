@@ -15,3 +15,5 @@ bower_packages*
 *.booproj
 
 /example_project/Assets/test-results/
+
+/doc/generated/
