@@ -163,6 +163,31 @@ Event deferral is currently not implemented. For inspiration on what this could 
 
 # Development Setup
 
+In order to use the `hsm` as bower package dependency in your unity project (`$ bower install`) create or edit the following files in your projects folder:
+
+* `.bowerrc` file specifying the repository url and target folder:
+
+    ~~~
+    {
+	    "registry": "<repository_url>",
+  		"directory": "Assets/bower_packages" 
+	}
+    ~~~
+
+* `bower.json` file specifying the dependency name and wanted version:
+
+    ~~~
+    {
+        "name" : "<some application name>",
+        ...
+        "dependencies": {
+            "hsm" : "latest"
+        }
+    }
+    ~~~
+
+
+
 ## Generating API documentation
 
 * *Requires* `doxygen` & `graphviz` (e.g. `brew install doxygen graphviz` on OS X)
