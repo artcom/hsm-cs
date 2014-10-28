@@ -13,7 +13,6 @@
   "homepage": "www.artcom.de",
   "ignore": [
     "**/.*",
-    "bower.json",
     "doc",
     "example_project"
   ],
