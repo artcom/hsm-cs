@@ -13,9 +13,9 @@
   "homepage": "www.artcom.de",
   "ignore": [
     "**/.*",
-    "./bower.json",
-    "./doc",
-    "./example_project"
+    "bower.json",
+    "doc",
+    "example_project"
   ],
   "dependencies": {
   }
