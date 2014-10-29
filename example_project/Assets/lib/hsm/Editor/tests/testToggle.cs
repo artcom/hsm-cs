@@ -1,37 +1,26 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Threading;
-using NUnit.Framework;
-using UnityEngine;
+﻿using NUnit.Framework;
 using Hsm;
 
 namespace UnitTesting {
 
 	[TestFixture]
-	internal class ToggleTests : AssertionHelper {
+	class ToggleTests : AssertionHelper {
 
-		private int enteredOnCount = 0;
-		private int exitedOffCount = 0;
+		private int enteredOnCount;
+		private int exitedOffCount;
 
-		public StateMachine sm;
+		public StateMachine _sm;
 
 		public ToggleTests() {
-			sm = new StateMachine(
+			_sm = new StateMachine(
 				new State("OffState")
-				.addHandler("switched_on", (data) => {
-					return "OnState";
-				})
-				.OnExit((t) => {
+				.addHandler("switched_on", data => "OnState")
+				.OnExit(t => {
 					exitedOffCount += 1;
 				}),
 				new State("OnState")
-				.addHandler("switched_off", (data) => {
-					return "OffState";
-				})
-				.OnEnter((s, t) => {
-					enteredOnCount++;
-				})
+				.addHandler("switched_off", data => "OffState")
+				.OnEnter((s, t) => enteredOnCount++)
 			);
 		}
 
@@ -39,50 +28,49 @@ namespace UnitTesting {
 		public void SetUp() {
 			enteredOnCount = 0;
 			enteredOnCount = 0;
-			sm.setup();
+			_sm.setup();
 		}
 
 		[TearDown]
 		public void TearDown() {
-			sm.tearDown(null);
+			_sm.tearDown(null);
 		}
 
 		[Test]
-		public void testToggle() {
-			Expect(sm.currentState.id, Is.EqualTo("OffState"));
+		public void TestToggle() {
+			Expect(_sm.currentState.id, Is.EqualTo("OffState"));
 
-			sm.handleEvent("switched_off");
-			Expect(sm.currentState.id, Is.EqualTo("OffState"));
+			_sm.handleEvent("switched_off");
+			Expect(_sm.currentState.id, Is.EqualTo("OffState"));
 
-			sm.handleEvent("switched_on");
-			Expect(sm.currentState.id, Is.EqualTo("OnState"));
+			_sm.handleEvent("switched_on");
+			Expect(_sm.currentState.id, Is.EqualTo("OnState"));
 
-			sm.handleEvent("switched_on");
-			Expect(sm.currentState.id, Is.EqualTo("OnState"));
+			_sm.handleEvent("switched_on");
+			Expect(_sm.currentState.id, Is.EqualTo("OnState"));
 		}
 
 		[Test]
-		public void testEnterExit() {
-			Expect(sm.currentState.id, Is.EqualTo("OffState"));
+		public void TestEnterExit() {
+			Expect(_sm.currentState.id, Is.EqualTo("OffState"));
 			Expect(enteredOnCount, Is.EqualTo(0));
 			Expect(exitedOffCount, Is.EqualTo(0));
 
-			sm.handleEvent("switched_off");
+			_sm.handleEvent("switched_off");
 			Expect(enteredOnCount, Is.EqualTo(0));
 			Expect(exitedOffCount, Is.EqualTo(0));
 
-			sm.handleEvent("switched_on");
+			_sm.handleEvent("switched_on");
 			Expect(enteredOnCount, Is.EqualTo(1));
 			Expect(exitedOffCount, Is.EqualTo(1));
 
-			sm.handleEvent("switched_on");
+			_sm.handleEvent("switched_on");
 			Expect(enteredOnCount, Is.EqualTo(1));
 			Expect(exitedOffCount, Is.EqualTo(1));
 
-			sm.handleEvent("switched_off");
+			_sm.handleEvent("switched_off");
 			Expect(enteredOnCount, Is.EqualTo(1));
 			Expect(exitedOffCount, Is.EqualTo(1));
 		}
-
 	}
 }

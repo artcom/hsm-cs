@@ -3,14 +3,14 @@ using NUnit.Framework;
 using System.Collections.Generic;
 
 namespace UnitTesting {
-	
+
 	[TestFixture]
-	internal class ParallelTests : AssertionHelper {
+	class ParallelTests : AssertionHelper {
 
 		[Test]
 		public void Instantiation() {
 			// Supply parallel statemachines as List
-			Parallel par = new Parallel("par", new List<StateMachine>(){
+			var par = new Parallel("par", new List<StateMachine>{
 				new StateMachine(),
 				new StateMachine()
 			});
@@ -31,17 +31,16 @@ namespace UnitTesting {
 
 			// Start with an initially empty Parallel Statemachine
 			par = new Parallel("par");
-			par.addStateMachine(new StateMachine())
-			   .addStateMachine(new StateMachine());
-		    Expect(par.id, Is.EqualTo("par"));
-		    Expect(par, Is.InstanceOf<State>());
-		    Expect(par, Is.InstanceOf<Parallel>());
-		    Expect(par.submachines.Count, Is.EqualTo(2));
+			par.addStateMachine(new StateMachine()).addStateMachine(new StateMachine());
+		  Expect(par.id, Is.EqualTo("par"));
+		  Expect(par, Is.InstanceOf<State>());
+		  Expect(par, Is.InstanceOf<Parallel>());
+		  Expect(par.submachines.Count, Is.EqualTo(2));
 		}
 
 		[Test]
 		public void Keyboard() {
-			StateMachine _numlockMachine = new StateMachine(
+			var _numlockMachine = new StateMachine(
 				new State("NumLockOff").addHandler("numlock", (data) => {
 					return "NumLockOn";
 				}),
@@ -49,7 +48,7 @@ namespace UnitTesting {
 					return "NumLockOff";
 				})
 			);
-			StateMachine _capslockMachine = new StateMachine(
+			var _capslockMachine = new StateMachine(
 				new State("CapsLockOff").addHandler("capslock", (data) => {
 					return "CapsLockOn";
 				}),
@@ -57,18 +56,18 @@ namespace UnitTesting {
 					return "CapsLockOff";
 				})
 			);
-				
-			Parallel keyBoardOnState = new Parallel("KeyboardOn", new[] {
+
+      Parallel keyBoardOnState = new Parallel("KeyboardOn", new[] {
 				_capslockMachine,
 				_numlockMachine
 			}).addHandler("unplug", (data) => {
 				return "KeyboardOff";
 			});
 
-			StateMachine sm = new StateMachine(
+			var sm = new StateMachine(
 				new State("KeyboardOff").addHandler("plug", (data) => {
 					return "KeyboardOn";
-				}), 
+				}),
 				keyBoardOnState
 			);
 			sm.setup();
