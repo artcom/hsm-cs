@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -41,9 +40,9 @@ namespace Hsm {
 			}
 		}
 		
-		public virtual void _exit(State nextstate) {
+		public virtual void _exit(State nextState) {
 			if (exitAction != null) {
-				exitAction.Invoke(nextstate);
+				exitAction.Invoke(nextState);
 			}
 		}
 	}
