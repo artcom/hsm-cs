@@ -33,10 +33,10 @@ namespace UnitTesting {
 			sm.handleEvent("switched_on");
 			Expect(sm.currentState.id, Is.EqualTo("OnState"));
 			var sub = sm.currentState as Sub;
-			Expect(sub.submachine.currentState.id, Is.EqualTo("Quiet"));
+			Expect(sub._submachine.currentState.id, Is.EqualTo("Quiet"));
 
 			sm.handleEvent("volume_up");
-			Expect(sub.submachine.currentState.id, Is.EqualTo("Loud"));
+			Expect(sub._submachine.currentState.id, Is.EqualTo("Loud"));
 
 			sm.handleEvent("switched_off");
 			Expect(sm.currentState.id, Is.EqualTo("OffState"));
@@ -44,7 +44,7 @@ namespace UnitTesting {
 			sm.handleEvent("switched_on");
 			Expect(sm.currentState.id, Is.EqualTo("OnState"));
 			sub = sm.currentState as Sub;
-			Expect(sub.submachine.currentState.id, Is.EqualTo("Quiet"));
+			Expect(sub._submachine.currentState.id, Is.EqualTo("Quiet"));
 		}
 
 		[Test]
@@ -65,8 +65,8 @@ namespace UnitTesting {
 			Expect(sm.currentState.id, Is.EqualTo("powered_on"));
 			var sub = sm.currentState as Sub;
 
-			Expect(sub.submachine.currentState, Is.Not.Null);
-			Expect(sub.submachine.currentState.id, Is.EqualTo("on"));
+			Expect(sub._submachine.currentState, Is.Not.Null);
+			Expect(sub._submachine.currentState.id, Is.EqualTo("on"));
 		}
 
 	}

@@ -95,18 +95,18 @@ namespace UnitTesting {
 		[Test]
 		public void RunToCompletion() {
 			var sub = sm.currentState as Sub;
-			Expect(sub.submachine.currentState.id, Is.EqualTo("a1"));
+			Expect(sub._submachine.currentState.id, Is.EqualTo("a1"));
 
 			sm.handleEvent("T1");
 			Expect(sm.currentState.id, Is.EqualTo("a"));
 			sub = sm.currentState as Sub;
-			Expect(sub.submachine.currentState.id, Is.EqualTo("a2"));
+			Expect(sub._submachine.currentState.id, Is.EqualTo("a2"));
 
 			log.Clear(); // start test at a2
 			sm.handleEvent("T2");
 			Expect(sm.currentState.id, Is.EqualTo("a"));
 			sub = sm.currentState as Sub;
-			Expect(sub.submachine.currentState.id, Is.EqualTo("a1"));
+			Expect(sub._submachine.currentState.id, Is.EqualTo("a1"));
 			Expect(log, Is.EqualTo(new[] {
 				"a2:exited(target:a3)",
 				"a3:entered(source:a2)",
