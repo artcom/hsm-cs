@@ -18,13 +18,13 @@ namespace UnitTesting {
 		public void QuietLoud() {
 			Sub onState = new Sub("OnState", new StateMachine(
 				new State("Quiet")
-					.addHandler("volume_up", data => "Loud"),
+					.AddHandler("volume_up", data => "Loud"),
 				new State("Loud")
-					.addHandler("volume_down", data => "Quiet")
+					.AddHandler("volume_down", data => "Quiet")
 			))
-				.addHandler("switched_off", data => "OffState"); 
+				.AddHandler("switched_off", data => "OffState"); 
 			State offState = new State("OffState")
-				.addHandler("switched_on", data => "OnState");
+				.AddHandler("switched_on", data => "OnState");
 
 			var sm = new StateMachine(offState, onState);
 			sm.setup();
@@ -50,12 +50,12 @@ namespace UnitTesting {
 		[Test]
 		public void SimpleSub() {
 			var powered_on_sub = new Sub("powered_on", new StateMachine(
-				new State("on").addHandler("off", data => "off"),
-				new State("off").addHandler("on", data => "on")
+				new State("on").AddHandler("off", data => "off"),
+				new State("off").AddHandler("on", data => "on")
 			))
-			.addHandler("power_off", data => "powered_off");
+			.AddHandler("power_off", data => "powered_off");
 			var sm = new StateMachine(
-				new State("powered_off").addHandler("power_on", data => "powered_on"),
+				new State("powered_off").AddHandler("power_on", data => "powered_on"),
 				powered_on_sub
 			);
 			sm.setup();

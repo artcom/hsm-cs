@@ -18,9 +18,7 @@ namespace UnitTesting {
 		[Test]
 		public void AddHandlerTest() {
 			var state = new State("On");
-			state.addHandler("foo", (data) => {
-				return "Off";
-      });
+			state.AddHandler("foo", data => "Off");
 			Expect(state.handlers.Count, EqualTo(1));
 			Expect(state.handlers.ContainsKey("foo"), Is.True);
 			Expect(state.handlers["foo"], Is.InstanceOf(typeof(Func<Dictionary<string, object>, String>)));
@@ -30,9 +28,9 @@ namespace UnitTesting {
 		[Test]
 		public void IsChainable() {
 			var state = new State("OnHold");
-			Expect(state.addHandler("foo", (data) => { return null; }), Is.EqualTo(state));
+			Expect(state.AddHandler("foo", data => null), Is.EqualTo(state));
 			Expect(state.OnEnter((s, t) => {}), Is.EqualTo(state));
-			Expect(state.OnExit((n) => {}), Is.EqualTo(state));
+			Expect(state.OnExit(n => {}), Is.EqualTo(state));
 		}
 
 		[Test]
@@ -40,7 +38,7 @@ namespace UnitTesting {
 			var state = new State("Manyfold");
 			bool called = false;
 			state.OnEnter((s, t) => { called = true; });
-			state._enter(state, state, new Dictionary<string, object>());
+			state.Enter(state, state, new Dictionary<string, object>());
 			Expect(called, Is.True);
 		}
 
@@ -48,8 +46,8 @@ namespace UnitTesting {
 		public void ExitCallback() {
 			var state = new State("Manyfold");
 			bool called = false;
-			state.OnExit((n) => { called = true; });
-			state._exit(state);
+			state.OnExit(n => { called = true; });
+			state.Exit(state);
 			Expect(called, Is.True);
 		}
 	}

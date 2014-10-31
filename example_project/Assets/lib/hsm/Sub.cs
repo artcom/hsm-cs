@@ -10,17 +10,17 @@ namespace Hsm {
 			submachine = theSubmachine;
 		}
 
-		public bool _handle(string evt, Dictionary<string, object> data) {
-			return submachine._handle(evt, data);
+		public bool Handle(string evt, Dictionary<string, object> data) {
+      return submachine.Handle(evt, data);
 		}
 
-		public override void _enter(State sourceState, State targetstate, Dictionary<string, object> data) {
-			base._enter(sourceState, targetstate, data);
+		public override void Enter(State sourceState, State targetstate, Dictionary<string, object> data) {
+			base.Enter(sourceState, targetstate, data);
 			submachine.setup();
 		}
 
-		public override void _exit(State nextState) {
-			base._exit(nextState);
+		public override void Exit(State nextState) {
+			base.Exit(nextState);
 			submachine.tearDown(null);
 		}
 	}

@@ -12,31 +12,31 @@ namespace Hsm {
 			submachines.AddRange(theSubmachines);
 		}
 
-		public bool _handle(string evt, Dictionary<string, object> data) {
+		public bool Handle(string evt, Dictionary<string, object> data) {
 			bool handled = false;
 
 			foreach(StateMachine submachine in submachines) {
-				if (submachine._handle(evt, data)) {
+				if (submachine.Handle(evt, data)) {
 					handled = true;
 				}
 			}
 			return handled;
 		}
 
-		public Parallel addStateMachine(StateMachine theStateMachine) {
+		public Parallel AddStateMachine(StateMachine theStateMachine) {
 			submachines.Add(theStateMachine);
 			return this;
 		}
 
-		public override void _enter(State sourceState, State targetstate, Dictionary<string, object> data) {
-			base._enter(sourceState, targetstate, data);
+		public override void Enter(State sourceState, State targetstate, Dictionary<string, object> data) {
+			base.Enter(sourceState, targetstate, data);
 			foreach(StateMachine submachine in submachines) {
 				submachine.setup();
 			}
 		}
 		
-		public override void _exit(State nextState) {
-			base._exit(nextState);
+		public override void Exit(State nextState) {
+			base.Exit(nextState);
 			foreach(StateMachine submachine in submachines) {
 				submachine.tearDown(null);
 			}

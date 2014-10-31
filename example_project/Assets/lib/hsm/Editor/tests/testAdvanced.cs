@@ -6,7 +6,7 @@ namespace UnitTesting {
 	
 	[TestFixture]
 	// See advanced.png
-	internal class AdvancedTests : AssertionHelper {
+	class AdvancedTests : AssertionHelper {
 				
 		public StateMachine sm;
 		public static List<string> log = new List<string>();
@@ -14,62 +14,62 @@ namespace UnitTesting {
 		public class LoggingState : State {
 
 			public LoggingState(string pId) : base(pId) {}
-			public override void _enter(State sourceState, State targetstate, Dictionary<string, object> data) {
+			public override void Enter(State sourceState, State targetstate, Dictionary<string, object> data) {
 				log.Add(id + ":entered(source:" + ((sourceState != null) ? sourceState.id : "null") + ")");
-				base._enter(sourceState, targetstate, data);
+				base.Enter(sourceState, targetstate, data);
 			}
-			public override void _exit(State nextState) {
+			public override void Exit(State nextState) {
 				log.Add(id + ":exited(target:" + ((nextState != null) ? nextState.id : "null") + ")");
-				base._exit(nextState);
+				base.Exit(nextState);
 			}
 		}
 
 		public AdvancedTests() {
 			// Statemachine 'a'
 			LoggingState a1 = new LoggingState("a1")
-				.addHandler("T1", (data) => {
+				.AddHandler("T1", data => {
 					return "a2";
 					// We do not (yet) have a proper guard implementation and
 					// cannot express what is depicted in diagram!
 				});
 			LoggingState a2 = new LoggingState("a2")
-				.addHandler("T2", (data) => {
+				.AddHandler("T2", data => {
 					sm.handleEvent("T3");
 					return "a3";
 				});
 			LoggingState a3 = new LoggingState("a3")
-				.addHandler("T3", (data) => {
+				.AddHandler("T3", data => {
 					return "a1";
 				});
 			
 			Sub a = new Sub("a", new StateMachine(
 				a1, a2, a3
 			))
-			.addHandler("T1", (data) => {
+			.AddHandler("T1", data => {
 				return "b2";
 			});
 			
 			// Statemachine 'b'
-			LoggingState b1 = new LoggingState("b1");
-			LoggingState b21 = new LoggingState("b21");
-			LoggingState b22 = new LoggingState("b22");
+			var b1 = new LoggingState("b1");
+			var b21 = new LoggingState("b21");
+			var b22 = new LoggingState("b22");
 			
-			Sub b2 = new Sub("b2", new StateMachine(
+			var b2 = new Sub("b2", new StateMachine(
 				b21, b22
 			));
 			
-			Sub b = new Sub("b", new StateMachine(
+			var b = new Sub("b", new StateMachine(
 				b1, b2
 			));
 			
 			// Statemachine 'c'
-			LoggingState c11 = new LoggingState("c11");
-			LoggingState c12 = new LoggingState("c12");
+			var c11 = new LoggingState("c11");
+			var c12 = new LoggingState("c12");
 			
-			LoggingState c21 = new LoggingState("c21");
-			LoggingState c22 = new LoggingState("c22");
+			var c21 = new LoggingState("c21");
+			var c22 = new LoggingState("c22");
 			
-			Parallel c = new Parallel("c",
+			var c = new Parallel("c",
 			    new StateMachine(c11, c12),
 			    new StateMachine(c21, c22)
 			);
@@ -94,7 +94,7 @@ namespace UnitTesting {
 
 		[Test]
 		public void RunToCompletion() {
-			Sub sub = sm.currentState as Sub;
+			var sub = sm.currentState as Sub;
 			Expect(sub.submachine.currentState.id, Is.EqualTo("a1"));
 
 			sm.handleEvent("T1");

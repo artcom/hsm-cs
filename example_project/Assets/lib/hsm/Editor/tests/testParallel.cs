@@ -31,7 +31,7 @@ namespace UnitTesting {
 
 			// Start with an initially empty Parallel Statemachine
 			par = new Parallel("par");
-			par.addStateMachine(new StateMachine()).addStateMachine(new StateMachine());
+			par.AddStateMachine(new StateMachine()).AddStateMachine(new StateMachine());
 		  Expect(par.id, Is.EqualTo("par"));
 		  Expect(par, Is.InstanceOf<State>());
 		  Expect(par, Is.InstanceOf<Parallel>());
@@ -41,18 +41,18 @@ namespace UnitTesting {
 		[Test]
 		public void Keyboard() {
 			var _numlockMachine = new StateMachine(
-				new State("NumLockOff").addHandler("numlock", (data) => {
+				new State("NumLockOff").AddHandler("numlock", data => {
 					return "NumLockOn";
 				}),
-				new State("NumLockOn").addHandler("numlock", (data) => {
+				new State("NumLockOn").AddHandler("numlock", data => {
 					return "NumLockOff";
 				})
 			);
 			var _capslockMachine = new StateMachine(
-				new State("CapsLockOff").addHandler("capslock", (data) => {
+				new State("CapsLockOff").AddHandler("capslock", data => {
 					return "CapsLockOn";
 				}),
-				new State("CapsLockOn").addHandler("capslock", (data) => {
+				new State("CapsLockOn").AddHandler("capslock", data => {
 					return "CapsLockOff";
 				})
 			);
@@ -60,12 +60,12 @@ namespace UnitTesting {
       Parallel keyBoardOnState = new Parallel("KeyboardOn", new[] {
 				_capslockMachine,
 				_numlockMachine
-			}).addHandler("unplug", (data) => {
+			}).AddHandler("unplug", data => {
 				return "KeyboardOff";
 			});
 
 			var sm = new StateMachine(
-				new State("KeyboardOff").addHandler("plug", (data) => {
+				new State("KeyboardOff").AddHandler("plug", data => {
 					return "KeyboardOn";
 				}),
 				keyBoardOnState

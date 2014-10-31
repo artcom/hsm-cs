@@ -14,12 +14,12 @@ namespace UnitTesting {
 		public ToggleTests() {
 			_sm = new StateMachine(
 				new State("OffState")
-				.addHandler("switched_on", data => "OnState")
+				.AddHandler("switched_on", data => "OnState")
 				.OnExit(t => {
 					exitedOffCount += 1;
 				}),
 				new State("OnState")
-				.addHandler("switched_off", data => "OffState")
+				.AddHandler("switched_off", data => "OffState")
 				.OnEnter((s, t) => enteredOnCount++)
 			);
 		}

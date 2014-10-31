@@ -1,8 +1,6 @@
 ﻿using UnityEngine;
 //using UnityEditor;
 using UnityEngine.UI;
-using System.Collections;
-using System.Collections.Generic;
 
 using Hsm;
 
@@ -22,10 +20,10 @@ public class StateMachineManager : MonoBehaviour {
 			Debug.Log(targetState.id + " -> on_enter (from: " +
 			((sourceState != null) ? sourceState.id : "null") + ")");
 		})
-		.OnExit((nextState) => {
+		.OnExit(nextState => {
 			Debug.Log("idle exit -> " + nextState.id);
 		})
-		.addHandler("start", (data) => {
+		.AddHandler("start", data => {
     	    if (data.ContainsKey("powered") && data["powered"].Equals(true)) {
 			    return "off";
 			}
@@ -38,10 +36,10 @@ public class StateMachineManager : MonoBehaviour {
 			Debug.Log(targetState.id + " -> on_enter (from: " +
 			((sourceState != null) ? sourceState.id : "null") + ")");
 		})
-		.addHandler("off", (data) => {
+		.AddHandler("off", data => {
 			return "off";
 		})
-		.OnExit((nextState) => {
+		.OnExit(nextState => {
 			Debug.Log("on exit -> " + nextState.id);
 		});
 
@@ -51,10 +49,10 @@ public class StateMachineManager : MonoBehaviour {
 			Debug.Log(targetState.id + " -> on_enter (from: " +
 			((sourceState != null) ? sourceState.id : "null") + ")");
 		})
-		.OnExit((nextState) => {
+		.OnExit(nextState => {
 			Debug.Log("on on_exit -> " + nextState.id);
 		})
-		.addHandler("on", (data) => {
+		.AddHandler("on", data => {
 			return "on";
 		});
 		
