@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using System.Collections;
 using System.Collections.Generic;
 
 namespace Hsm {
@@ -46,7 +45,7 @@ namespace Hsm {
 		}
 
 		public void tearDown(State nextState) {
-			currentState._exit(nextState);
+			currentState.Exit(nextState);
 		}
 
 		public StateMachine addState(State pState) {
@@ -70,18 +69,18 @@ namespace Hsm {
 				Event curEvent;
 				while (eventQueue.Count > 0) {
 					curEvent = eventQueue.Dequeue();
-					_handle(curEvent.evt, curEvent.data);
+					Handle(curEvent.evt, curEvent.data);
 				}
 				eventInProgress = false;
 			}
 		}
 
-		public bool _handle(string evt, Dictionary<string, object> data) {
+		public bool Handle(string evt, Dictionary<string, object> data) {
 			// check if current state is a (nested) statemachine, if so, give it the event.
 			// if it handles the event, stop processing here.
 			if (currentState is INestedState) {
 				INestedState nested = currentState as INestedState;
-				if (nested._handle(evt, data)) {
+				if (nested.Handle(evt, data)) {
 					return true;
 				}
 			}
@@ -100,11 +99,11 @@ namespace Hsm {
 
 		public void _enterState(State sourceState, State targetState, Dictionary<string, object> data) {
 			currentState = targetState;
-			targetState._enter(sourceState, targetState, data);
+			targetState.Enter(sourceState, targetState, data);
 		}
 
 		private void _switchState(State sourceState, State targetState, Dictionary<string, object> data) {
-			sourceState._exit(targetState);
+			sourceState.Exit(targetState);
 			_enterState(sourceState, targetState, data);
 		}
 	}

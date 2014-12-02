@@ -4,24 +4,24 @@ namespace Hsm {
 
 	public class Sub : State, INestedState {
 
-		public StateMachine submachine;
+		public StateMachine _submachine;
 
 		public Sub(string theId, StateMachine theSubmachine) : base (theId) {
-			submachine = theSubmachine;
+			_submachine = theSubmachine;
 		}
 
-		public bool _handle(string evt, Dictionary<string, object> data) {
-			return submachine._handle(evt, data);
+		public bool Handle(string evt, Dictionary<string, object> data) {
+			return _submachine.Handle(evt, data);
 		}
 
-		public override void _enter(State sourceState, State targetstate, Dictionary<string, object> data) {
-			base._enter(sourceState, targetstate, data);
-			submachine.setup();
+		public override void Enter(State sourceState, State targetstate, Dictionary<string, object> data) {
+			base.Enter(sourceState, targetstate, data);
+			_submachine.setup();
 		}
 
-		public override void _exit(State nextState) {
-			base._exit(nextState);
-			submachine.tearDown(null);
+		public override void Exit(State nextState) {
+			_submachine.tearDown(null);
+			base.Exit(nextState);
 		}
 	}
 
