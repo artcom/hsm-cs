@@ -11,7 +11,7 @@ namespace Hsm {
 		}
 
 		public bool Handle(string evt, Dictionary<string, object> data) {
-      return _submachine.Handle(evt, data);
+			return _submachine.Handle(evt, data);
 		}
 
 		public override void Enter(State sourceState, State targetstate, Dictionary<string, object> data) {
@@ -20,8 +20,8 @@ namespace Hsm {
 		}
 
 		public override void Exit(State nextState) {
-			base.Exit(nextState);
 			_submachine.tearDown(null);
+			base.Exit(nextState);
 		}
 	}
 

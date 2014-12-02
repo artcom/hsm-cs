@@ -12,7 +12,6 @@ namespace UnitTesting {
 		public static List<string> log = new List<string>();
 
 		public class LoggingState : State {
-
 			public LoggingState(string pId) : base(pId) {}
 			public override void Enter(State sourceState, State targetstate, Dictionary<string, object> data) {
 				log.Add(id + ":entered(source:" + ((sourceState != null) ? sourceState.id : "null") + ")");
@@ -21,6 +20,18 @@ namespace UnitTesting {
 			public override void Exit(State nextState) {
 				log.Add(id + ":exited(target:" + ((nextState != null) ? nextState.id : "null") + ")");
 				base.Exit(nextState);
+			}
+		}
+
+		public class LoggingSub : Sub {
+			public LoggingSub(string pId, StateMachine submachine) : base(pId, submachine) {}
+			public override void Enter(State sourceState, State targetstate, Dictionary<string, object> data) {
+				log.Add(id + ":entered(source:" + ((sourceState != null) ? sourceState.id : "null") + ")");
+				base.Enter(sourceState, targetstate, data);
+			}
+			public override void Exit(State nextState) {
+				base.Exit(nextState);
+				log.Add(id + ":exited(target:" + ((nextState != null) ? nextState.id : "null") + ")");
 			}
 		}
 
@@ -42,11 +53,11 @@ namespace UnitTesting {
 					return "a1";
 				});
 			
-			Sub a = new Sub("a", new StateMachine(
+			Sub a = new LoggingSub("a", new StateMachine(
 				a1, a2, a3
 			))
-			.AddHandler("T1", data => {
-				return "b2";
+			.AddHandler("ToB", data => {
+				return "b";
 			});
 			
 			// Statemachine 'b'
@@ -58,7 +69,7 @@ namespace UnitTesting {
 				b21, b22
 			));
 			
-			var b = new Sub("b", new StateMachine(
+			var b = new LoggingSub("b", new StateMachine(
 				b1, b2
 			));
 			
@@ -90,6 +101,25 @@ namespace UnitTesting {
 		[Test]
 		public void Enter() {
 			Expect(sm.currentState.id, Is.EqualTo("a"));
+		}
+
+		[Test]
+		public void TestExit() {
+			var sub = sm.currentState as Sub;
+			Expect(sub._submachine.currentState.id, Is.EqualTo("a1"));
+
+			log.Clear();
+
+			sm.handleEvent("ToB");
+			Expect(sm.currentState.id, Is.EqualTo("b"));
+			sub = sm.currentState as Sub;
+			Expect(sub._submachine.currentState.id, Is.EqualTo("b1"));
+			Expect(log, Is.EqualTo(new[] {
+				"a1:exited(target:null)",
+				"a:exited(target:b)",
+				"b:entered(source:a)",
+				"b1:entered(source:null)"
+			}));
 		}
 
 		[Test]
