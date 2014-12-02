@@ -13,7 +13,7 @@ namespace Hsm {
 		public static T OnEnter<T>(this T state, Action<State, State> action) where T : State {
 			state.enterAction = action;
 			return state;
-    }
+	}
 
 		public static T AddHandler<T>(this T state, string evt, Func<Dictionary<string, object>, string> handler) where T : State {
 			state.handlers[evt] = handler;
