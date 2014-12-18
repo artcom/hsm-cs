@@ -55,5 +55,13 @@ namespace UnitTesting {
 			sm.setup();
 			Expect(sm.initialState.id, Is.EqualTo("first"));
 		}
+
+		[Test]
+		public void TeardownResetsCurrentState() {
+			var sm = new StateMachine(new State("first"), new State("second"));
+			sm.setup();
+			sm.tearDown(null);
+			Expect(sm.currentState, Is.EqualTo(null));
+		}
 	}
 }

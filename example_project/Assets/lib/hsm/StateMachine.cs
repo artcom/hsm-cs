@@ -46,6 +46,7 @@ namespace Hsm {
 
 		public void tearDown(State nextState) {
 			currentState.Exit(nextState);
+			currentState = null;
 		}
 
 		public StateMachine addState(State pState) {

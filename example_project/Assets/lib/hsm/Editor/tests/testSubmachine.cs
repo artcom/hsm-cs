@@ -40,6 +40,7 @@ namespace UnitTesting {
 
 			sm.handleEvent("switched_off");
 			Expect(sm.currentState.id, Is.EqualTo("OffState"));
+			Expect(sub._submachine.currentState, Is.EqualTo(null));
 
 			sm.handleEvent("switched_on");
 			Expect(sm.currentState.id, Is.EqualTo("OnState"));

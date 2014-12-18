@@ -32,10 +32,10 @@ namespace UnitTesting {
 			// Start with an initially empty Parallel Statemachine
 			par = new Parallel("par");
 			par.AddStateMachine(new StateMachine()).AddStateMachine(new StateMachine());
-		  Expect(par.id, Is.EqualTo("par"));
-		  Expect(par, Is.InstanceOf<State>());
-		  Expect(par, Is.InstanceOf<Parallel>());
-		  Expect(par._submachines.Count, Is.EqualTo(2));
+			Expect(par.id, Is.EqualTo("par"));
+			Expect(par, Is.InstanceOf<State>());
+			Expect(par, Is.InstanceOf<Parallel>());
+			Expect(par._submachines.Count, Is.EqualTo(2));
 		}
 
 		[Test]
@@ -49,7 +49,7 @@ namespace UnitTesting {
 				new State("CapsLockOn").AddHandler("capslock", data => "CapsLockOff")
 			);
 
-      Parallel keyBoardOnState = new Parallel("KeyboardOn", new[] {
+			Parallel keyBoardOnState = new Parallel("KeyboardOn", new[] {
 				_capslockMachine,
 				_numlockMachine
 			}).AddHandler("unplug", data => "KeyboardOff");
@@ -83,6 +83,8 @@ namespace UnitTesting {
 			// now unplug keyboard
 			sm.handleEvent("unplug");
 			Expect(sm.currentState.id, Is.EqualTo("KeyboardOff"));
+			Expect(_numlockMachine.currentState, Is.EqualTo(null));
+			Expect(_capslockMachine.currentState, Is.EqualTo(null));
 
 			// pressing capslock while unplugged does nothing
 			sm.handleEvent("capslock");
