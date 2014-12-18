@@ -42,15 +42,15 @@ StateMachine a = new StateMachine(
 
 // or attaching the states after state machine construction
 StateMachine a = new StateMachine();
-a.addState(new State("a1"));
-a.addState(new State("a2"));
-a.addState(new State("a3"));
+a.AddState(new State("a1"));
+a.AddState(new State("a2"));
+a.AddState(new State("a3"));
 
 // or by using *chaining*, which in C# terminology is often called *Fluent Interface*
 StateMachine a = new StateMachine()
-.addState(new State("a1"))
-.addState(new State("a2"))
-.addState(new State("a3"));
+.AddState(new State("a1"))
+.AddState(new State("a2"))
+.AddState(new State("a3"));
 ~~~
 
 By Convention, the first state passed is the initial state. The state machine is then initialized by
@@ -68,7 +68,7 @@ Each state has a map of event handlers. These handlers will be called when the s
 ![image](doc/exports/simpleWithTransition.png)
 
 ~~~
-a3.addHandler("T3", (data) => {
+a3.AddHandler("T3", (data) => {
     return "a1";
 });
 ~~~
