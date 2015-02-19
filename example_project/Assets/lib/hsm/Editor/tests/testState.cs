@@ -37,9 +37,28 @@ namespace UnitTesting {
 		public void EnterCallback() {
 			var state = new State("Manyfold");
 			bool called = false;
+			state.OnEnter((s, t, d) => { called = true; });
+			Expect(state.enterAction, Is.EqualTo(null));
+			Expect(state.enterActionWithData, Is.Not.EqualTo(null));
 			state.OnEnter((s, t) => { called = true; });
-			state.Enter(state, state, new Dictionary<string, object>());
+			Expect(state.enterActionWithData, Is.EqualTo(null));
+			Expect(state.enterAction, Is.Not.EqualTo(null));
+			state.Enter(state, state, new Dictionary<string, object>{{"value", "crocodile"}});
 			Expect(called, Is.True);
+		}
+
+		[Test]
+		public void EnterCallbackWithData() {
+			var state = new State("Manyfold");
+			string called = "";
+			state.OnEnter((s, t) => { called = "true"; });
+			Expect(state.enterActionWithData, Is.EqualTo(null));
+			Expect(state.enterAction, Is.Not.EqualTo(null));
+			state.OnEnter((s, t, d) => { called = (string)d["value"]; });
+			Expect(state.enterAction, Is.EqualTo(null));
+			Expect(state.enterActionWithData, Is.Not.EqualTo(null));
+			state.Enter(state, state, new Dictionary<string, object>{{"value", "crocodile"}});
+			Expect(called, Is.EqualTo("crocodile"));
 		}
 
 		[Test]
