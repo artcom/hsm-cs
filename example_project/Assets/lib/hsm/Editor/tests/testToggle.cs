@@ -17,7 +17,7 @@ namespace UnitTesting {
 			_sm = new StateMachine(
 				offState
 				.AddHandler("switched_on", onState)
-				.OnExit(t => {
+				.OnExit((sourceState, targetState) => {
 					exitedOffCount += 1;
 				}),
 				onState

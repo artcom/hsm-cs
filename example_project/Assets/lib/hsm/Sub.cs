@@ -17,12 +17,12 @@ namespace Hsm {
 
 		public override void Enter(State sourceState, State targetstate, Dictionary<string, object> data) {
 			base.Enter(sourceState, targetstate, data);
-			_submachine.setup();
+			_submachine._enterState(sourceState, targetstate, data);
 		}
 
-		public override void Exit(State nextState) {
-			_submachine.tearDown(null);
-			base.Exit(nextState);
+		public override void Exit(State sourceState, State targetstate, Dictionary<string, object> data) {
+			_submachine.tearDown(data);
+			base.Exit(sourceState, null, data);
 		}
 	}
 
