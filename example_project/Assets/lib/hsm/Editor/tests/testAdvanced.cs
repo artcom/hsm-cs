@@ -19,9 +19,9 @@ namespace UnitTesting {
 				log.Add(id + ":entered(source:" + ((sourceState != null) ? sourceState.id : "null") + ")");
 				base.Enter(sourceState, targetstate, data);
 			}
-			public override void Exit(State sourceState, State targetState, Dictionary<string, object> data) {
-				log.Add(id + ":exited(target:" + ((targetState != null) ? targetState.id : "null") + ")");
-				base.Exit(sourceState, targetState, data);
+			public override void Exit(State nextState) {
+				log.Add(id + ":exited(target:" + ((nextState != null) ? nextState.id : "null") + ")");
+				base.Exit(nextState);
 			}
 		}
 
@@ -33,9 +33,9 @@ namespace UnitTesting {
 				log.Add(id + ":entered(source:" + ((sourceState != null) ? sourceState.id : "null") + ")");
 				base.Enter(sourceState, targetstate, data);
 			}
-			public override void Exit(State sourceState, State targetState, Dictionary<string, object> data) {
-				base.Exit(sourceState, targetState, data);
-				log.Add(id + ":exited(target:" + ((targetState != null) ? targetState.id : "null") + ")");
+			public override void Exit(State nextState) {
+				base.Exit(nextState);
+				log.Add(id + ":exited(target:" + ((nextState != null) ? nextState.id : "null") + ")");
 			}
 		}
 

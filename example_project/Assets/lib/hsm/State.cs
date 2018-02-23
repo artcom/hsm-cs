@@ -5,6 +5,11 @@ using UnityEngine;
 namespace Hsm {
 
 	public static class ExtensionMethods {
+		public static T OnExit<T>(this T state, Action<State> action) where T : State {
+			state.exitAction = action;
+			return state;
+		}
+
 		public static T OnEnter<T>(this T state, Action<State, State> action) where T : State {
 			state.enterAction = action;
 			state.enterActionWithData = null;
@@ -14,17 +19,6 @@ namespace Hsm {
 		public static T OnEnter<T>(this T state, Action<State, State, Dictionary<string, object>> action) where T : State {
 			state.enterActionWithData = action;
 			state.enterAction = null;
-			return state;
-		}
-
-		public static T OnExit<T>(this T state, Action<State,State> action) where T : State {
-			state.exitAction = action;
-			return state;
-		}
-
-		public static T OnExit<T>(this T state, Action<State, State, Dictionary<string, object>> action) where T : State {
-			state.exitActionWithData = action;
-			state.exitAction = null;
 			return state;
 		}
 
@@ -56,8 +50,7 @@ namespace Hsm {
 		public StateMachine owner;
 		public Action<State, State> enterAction = null;
 		public Action<State, State, Dictionary<string, object>> enterActionWithData = null;
-		public Action<State, State> exitAction = null;
-		public Action<State, State, Dictionary<string, object>> exitActionWithData = null;
+		public Action<State> exitAction = null;
 		public Dictionary<string, List<Handler>> handlers = new Dictionary<string, List<Handler>>();
 
 		public State(string pId) {
@@ -73,12 +66,9 @@ namespace Hsm {
 			}
 		}
 		
-		public virtual void Exit(State sourceState, State targetstate, Dictionary<string, object> data) {
+		public virtual void Exit(State nextState) {
 			if (exitAction != null) {
-				exitAction.Invoke(sourceState, targetstate);
-			}
-			if (exitActionWithData != null) {
-				exitActionWithData.Invoke(sourceState, targetstate, data);
+				exitAction.Invoke(nextState);
 			}
 		}
 
@@ -88,10 +78,6 @@ namespace Hsm {
 				handlers[eventName] = new List<Handler>();
 			}
 			handlers[eventName].Add(handler);
-		}
-
-		public bool hasAncestorStateMachine(StateMachine stateMachine) {
-			return false;
 		}
 	}
 }

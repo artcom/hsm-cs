@@ -36,7 +36,7 @@ namespace UnitTesting {
 			var state = new State("OnHold");
 			Expect(state.AddHandler("foo", null), Is.EqualTo(state));
 			Expect(state.OnEnter((s, t) => {}), Is.EqualTo(state));
-			Expect(state.OnExit((sourceState, targetState) => {}), Is.EqualTo(state));
+			Expect(state.OnExit(n => {}), Is.EqualTo(state));
 		}
 
 		[Test]
@@ -71,8 +71,8 @@ namespace UnitTesting {
 		public void ExitCallback() {
 			var state = new State("Manyfold");
 			bool called = false;
-			state.OnExit((sourceState, targetState) => { called = true; });
-			state.Exit(state, null, null);
+			state.OnExit(n => { called = true; });
+			state.Exit(state);
 			Expect(called, Is.True);
 		}
 	}

@@ -41,19 +41,15 @@ namespace Hsm {
 		public override void Enter(State sourceState, State targetstate, Dictionary<string, object> data) {
 			base.Enter(sourceState, targetstate, data);
 			foreach(var submachine in _submachines) {
-				if (targetstate.hasAncestorStateMachine(submachine)) {
-					submachine._enterState(sourceState, targetstate, data);
-				} else {
-					submachine.setup();
-				}
+				submachine.setup();
 			}
 		}
 		
-		public override void Exit(State sourceState, State targetstate, Dictionary<string, object> data) {
+		public override void Exit(State nextState) {
+			base.Exit(nextState);
 			foreach(var submachine in _submachines) {
-				submachine.tearDown(data);
+				submachine.tearDown(null);
 			}
-			base.Exit(sourceState, targetstate, data);
 		}
 	}
 }
