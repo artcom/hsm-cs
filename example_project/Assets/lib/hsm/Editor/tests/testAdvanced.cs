@@ -112,13 +112,12 @@ namespace UnitTesting {
 		public void TestPath() {
 			sm.handleEvent("T4");
 			var sub = sm.currentState as Sub;
-			Expect(sub._submachine.currentState.id, Is.EqualTo("b21"));
+			Expect(sub._submachine.currentState.id, Is.EqualTo("b2"));
 
-			Expect(sub.owner, Is.Not.Null);
-			Expect(sub._submachine.container, Is.Not.Null);
-			Expect(sub._submachine.currentState.owner, Is.Not.Null);
-
-			List<StateMachine> path = sub._submachine.getPath();
+			var subsub = sub._submachine.currentState as Sub;
+			Expect(subsub._submachine.currentState.id, Is.EqualTo("b21"));
+			
+			List<StateMachine> path = subsub._submachine.getPath();
 			Expect(path.Count, Is.EqualTo(3));
 		}
 
@@ -137,7 +136,7 @@ namespace UnitTesting {
 				"a1:exited(target:null)",
 				"a:exited(target:b)",
 				"b:entered(source:a)",
-				"b1:entered(source:null)"
+				"b1:entered(source:a)"
 			}));
 		}
 
@@ -173,17 +172,24 @@ namespace UnitTesting {
 			Expect(sub._submachine.currentState.id, Is.EqualTo("a2"));
 
 			log.Clear(); // start test at a2
+			log = new List<string>();
+
 			sm.handleEvent("T2");
 			Expect(sm.currentState.id, Is.EqualTo("a"));
+			
 			sub = sm.currentState as Sub;
 			Expect(sub._submachine.currentState.id, Is.EqualTo("a1"));
+			
 			Expect(log, Is.EqualTo(new[] {
 				"a2:exited(target:a3)",
 				"a2:action(T2)",
 				"a3:entered(source:a2)",
 				"a3:exited(target:a1)",
-				"a1:entered(source:a3)"})
+				"a1:entered(source:a3)"
+				})
 			);
+
+			System.Console.WriteLine(log);
 		}
 	}
 }

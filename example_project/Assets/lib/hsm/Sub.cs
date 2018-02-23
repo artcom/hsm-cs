@@ -17,7 +17,7 @@ namespace Hsm {
 
 		public override void Enter(State sourceState, State targetstate, Dictionary<string, object> data) {
 			base.Enter(sourceState, targetstate, data);
-			_submachine.setup();
+			_submachine.enterState(sourceState, targetstate, data);
 		}
 
 		public override void Exit(State nextState) {

@@ -31,7 +31,7 @@ namespace Hsm {
 				return false;
 			}
 			StateMachine lca = _findLeastCommonAncestor();
-			lca._switchState(source, target, action, data);
+			lca.switchState(source, target, action, data);
 			return true;
 		}
 
@@ -45,7 +45,9 @@ namespace Hsm {
 		private StateMachine _findLeastCommonAncestor() {
 			List<StateMachine> sourcePath = source.owner.getPath();
 			List<StateMachine> targetPath = target.owner.getPath();
-			foreach(StateMachine stateMachine in sourcePath) {
+
+			for (var i = sourcePath.Count-1; i >= 0; i--) {
+				StateMachine stateMachine = sourcePath[i];
 				if (targetPath.Contains(stateMachine)) {
 					return stateMachine;
 				}

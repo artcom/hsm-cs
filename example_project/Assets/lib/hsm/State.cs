@@ -42,8 +42,7 @@ namespace Hsm {
 			return state;
 		}
 	}
-
-	[System.Serializable]
+	
 	public class State {
 		[SerializeField]
 		public string id;
@@ -78,6 +77,15 @@ namespace Hsm {
 				handlers[eventName] = new List<Handler>();
 			}
 			handlers[eventName].Add(handler);
+		}
+
+		public bool hasAncestorStateMachine(StateMachine stateMachine) {
+			for (var i = 0; i < owner.getPath().Count; ++i) {
+				if (owner.getPath()[i] == stateMachine) {
+					return true;
+				}
+			}
+			return false;
 		}
 	}
 }

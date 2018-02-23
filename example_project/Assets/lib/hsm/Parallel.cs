@@ -28,12 +28,10 @@ namespace Hsm {
 
 		public bool Handle(string evt, Dictionary<string, object> data) {
 			bool handled = false;
-
 			foreach(var submachine in _submachines) {
-				handled |= submachine.Handle(evt, data);
-				/*if (submachine.Handle(evt, data)) {
+				if(submachine.Handle(evt, data)) {
 					handled = true;
-				}*/
+				}
 			}
 			return handled;
 		}
@@ -41,15 +39,19 @@ namespace Hsm {
 		public override void Enter(State sourceState, State targetstate, Dictionary<string, object> data) {
 			base.Enter(sourceState, targetstate, data);
 			foreach(var submachine in _submachines) {
-				submachine.setup();
+				if (targetstate.hasAncestorStateMachine(submachine)) {
+					submachine.enterState(sourceState, targetstate, data);
+				} else {
+					submachine.setup();
+				}
 			}
 		}
 		
 		public override void Exit(State nextState) {
-			base.Exit(nextState);
 			foreach(var submachine in _submachines) {
 				submachine.tearDown(null);
 			}
+			base.Exit(nextState);
 		}
 	}
 }
