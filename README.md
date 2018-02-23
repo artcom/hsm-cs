@@ -92,7 +92,7 @@ a3.AddHandler("T3", a2, data => {
 });
 ```
 
-# Internal, External and Local Transitions
+# Internal, External
 
 Internal and External can be selected by using the `Transition` enum:
 
@@ -106,12 +106,13 @@ a3.AddHandler("TI", a3, Transition.Internal, data => {
 
 External transitions are used by default. When using internal transitions target state must be the similar to the handling state.
 
+# Local Transitions (not implemented)
+
 Local Transitions are currently not implemented. For inspiration on what this could look like see:
 
 * [Local vs. external transitions](http://en.wikipedia.org/wiki/UML_state_machine#Local_versus_external_transitions)
 
-
-# Guards
+# Guards (not implemented)
 
 Guards are currently not implemented. For inspiration on what this could look like see: https://github.com/Mask/hsm-js
 
@@ -135,9 +136,6 @@ Sub a = new Sub("a", new StateMachine(
 
 For more details on how to construct a Hsm.Sub consult the [tests](lib/hsm/Editor/tests/testSubmachine.cs).
 
-# Lowest Common Ancestor Algorithm
-
-LCA is currently not implemented. For inspiration on what this could look like see: https://github.com/Mask/hsm-js
 
 # Parallel State-Machines (orthogonal regions)
 
