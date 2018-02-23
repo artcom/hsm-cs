@@ -12,7 +12,9 @@ namespace UnitTesting {
 		public static List<string> log = new List<string>();
 
 		public class LoggingState : State {
-			public LoggingState(string pId) : base(pId) {}
+			public LoggingState(string pId) : base(pId) {
+				this.id = pId;
+			}
 			public override void Enter(State sourceState, State targetstate, Dictionary<string, object> data) {
 				log.Add(id + ":entered(source:" + ((sourceState != null) ? sourceState.id : "null") + ")");
 				base.Enter(sourceState, targetstate, data);
@@ -24,7 +26,9 @@ namespace UnitTesting {
 		}
 
 		public class LoggingSub : Sub {
-			public LoggingSub(string pId, StateMachine submachine) : base(pId, submachine) {}
+			public LoggingSub(string pId, StateMachine submachine) : base(pId, submachine) {
+				this.id = pId;
+			}
 			public override void Enter(State sourceState, State targetstate, Dictionary<string, object> data) {
 				log.Add(id + ":entered(source:" + ((sourceState != null) ? sourceState.id : "null") + ")");
 				base.Enter(sourceState, targetstate, data);
@@ -68,6 +72,8 @@ namespace UnitTesting {
 			var b = new LoggingSub("b", new StateMachine(
 				b1, b2
 			));
+
+			a.AddHandler("T4", b2);
 			
 			// Statemachine 'c'
 			var c11 = new LoggingState("c11");
@@ -100,6 +106,20 @@ namespace UnitTesting {
 		[Test]
 		public void Enter() {
 			Expect(sm.currentState.id, Is.EqualTo("a"));
+		}
+
+		[Test]
+		public void TestPath() {
+			sm.handleEvent("T4");
+			var sub = sm.currentState as Sub;
+			Expect(sub._submachine.currentState.id, Is.EqualTo("b21"));
+
+			Expect(sub.owner, Is.Not.Null);
+			Expect(sub._submachine.container, Is.Not.Null);
+			Expect(sub._submachine.currentState.owner, Is.Not.Null);
+
+			List<StateMachine> path = sub._submachine.getPath();
+			Expect(path.Count, Is.EqualTo(3));
 		}
 
 		[Test]

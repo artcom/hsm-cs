@@ -7,6 +7,7 @@ namespace Hsm {
 	[System.Serializable]
 	public class StateMachine {
 		[SerializeField]
+		public State container;
 		public List<State> states = new List<State>();
 		[SerializeField]
 		public State initialState;
@@ -19,10 +20,18 @@ namespace Hsm {
 
 		public StateMachine(List<State> pStates) {
 			states = pStates;
+			_setOwners();
 		}
 
 		public StateMachine(params State[] pStates) {
 			states.AddRange(pStates);
+			_setOwners();
+		}
+
+		private void _setOwners() {
+			foreach (State state in states) {
+				state.owner = this;
+			}
 		}
 
 		public void setup() {
@@ -41,8 +50,8 @@ namespace Hsm {
 		}
 
 		public StateMachine addState(State pState) {
-			// TODO: Check if state with id already exists
 			states.Add(pState);
+			_setOwners();
 			return this;
 		}
 
@@ -125,6 +134,19 @@ namespace Hsm {
 		public void _enterState(State sourceState, State targetState, Dictionary<string, object> data) {
 			currentState = targetState;
 			targetState.Enter(sourceState, targetState, data);
+		}
+
+		public List<StateMachine> getPath() {
+			List<StateMachine> path = new List<StateMachine>();
+			StateMachine stateMachine = this;
+			while (true) {
+				path.Add(stateMachine);
+				if (stateMachine.container == null) {
+					break;
+				}
+				stateMachine = stateMachine.container.owner;
+			}
+			return path;
 		}
 
 	}

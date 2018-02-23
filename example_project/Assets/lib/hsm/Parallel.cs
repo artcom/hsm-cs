@@ -6,10 +6,24 @@ namespace Hsm {
 		
 		public Parallel(string theId, List<StateMachine> theSubmachines) : base (theId) {
 			_submachines = theSubmachines;
+			_setContainer();
 		}
 
 		public Parallel(string theId, params StateMachine[] theSubmachines): base (theId) {
 			_submachines.AddRange(theSubmachines);
+			_setContainer();
+		}
+
+		public Parallel AddStateMachine(StateMachine theStateMachine) {
+			_submachines.Add(theStateMachine);
+			_setContainer();
+			return this;
+		}
+
+		private void _setContainer() {
+			foreach (StateMachine stateMachine in _submachines) {
+				stateMachine.container = this;
+			}
 		}
 
 		public bool Handle(string evt, Dictionary<string, object> data) {
@@ -23,12 +37,7 @@ namespace Hsm {
 			}
 			return handled;
 		}
-
-		public Parallel AddStateMachine(StateMachine theStateMachine) {
-			_submachines.Add(theStateMachine);
-			return this;
-		}
-
+		
 		public override void Enter(State sourceState, State targetstate, Dictionary<string, object> data) {
 			base.Enter(sourceState, targetstate, data);
 			foreach(var submachine in _submachines) {

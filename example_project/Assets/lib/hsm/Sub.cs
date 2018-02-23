@@ -8,6 +8,7 @@ namespace Hsm {
 
 		public Sub(string theId, StateMachine theSubmachine) : base (theId) {
 			_submachine = theSubmachine;
+			_submachine.container = this;
 		}
 
 		public bool Handle(string evt, Dictionary<string, object> data) {

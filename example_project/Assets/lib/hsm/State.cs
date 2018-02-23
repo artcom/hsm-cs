@@ -47,6 +47,7 @@ namespace Hsm {
 	public class State {
 		[SerializeField]
 		public string id;
+		public StateMachine owner;
 		public Action<State, State> enterAction = null;
 		public Action<State, State, Dictionary<string, object>> enterActionWithData = null;
 		public Action<State> exitAction = null;
