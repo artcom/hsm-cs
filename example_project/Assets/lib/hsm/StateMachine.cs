@@ -15,16 +15,6 @@ namespace Hsm {
 
 		private bool eventInProgress = false;
 
-		// For storing incoming events.
-		struct Event {
-			public string evt;
-			public Dictionary<string, object> data;
-
-			public Event(string evt, Dictionary<string, object> data) {
-				this.evt = evt;
-				this.data = data;
-			}
-		}
 		private Queue<Event> eventQueue = new Queue<Event>();
 
 		public StateMachine(List<State> pStates) {
