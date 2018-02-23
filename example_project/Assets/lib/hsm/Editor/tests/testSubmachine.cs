@@ -20,11 +20,11 @@ namespace UnitTesting {
 			State loud = new State("Loud");
 			State offState = new State("OffState");
 			Sub onState = new Sub("OnState", new StateMachine(
-				quiet.AddHandler("volume_up", data => loud),
-				loud.AddHandler("volume_down", data => quiet)
+				quiet.AddHandler("volume_up", loud),
+				loud.AddHandler("volume_down", quiet)
 			));
-			onState.AddHandler("switched_off", data => offState);
-			offState.AddHandler("switched_on", data => onState);
+			onState.AddHandler("switched_off", offState);
+			offState.AddHandler("switched_on", onState);
 
 			var sm = new StateMachine(offState, onState);
 			sm.setup();
@@ -55,13 +55,13 @@ namespace UnitTesting {
 			
 			State powered_off = new State("powered_off");
 			Sub powered_on = new Sub("powered_on", new StateMachine(
-				onState.AddHandler("off", data => offState),
-				offState.AddHandler("on", data => onState)
+				onState.AddHandler("off", offState),
+				offState.AddHandler("on", onState)
 			));
 			
-			powered_on.AddHandler("power_off", data => powered_off);
+			powered_on.AddHandler("power_off", powered_off);
 			var sm = new StateMachine(
-				powered_off.AddHandler("power_on", data => powered_on),
+				powered_off.AddHandler("power_on", powered_on),
 				powered_on
 			);
 			sm.setup();

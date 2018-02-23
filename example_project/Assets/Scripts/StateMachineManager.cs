@@ -27,21 +27,14 @@ public class StateMachineManager : MonoBehaviour {
 		.OnExit(nextState => {
 			Debug.Log("idle exit -> " + nextState.id);
 		})
-		.AddHandler("start", data => {
-    	    if (data.ContainsKey("powered") && data["powered"].Equals(true)) {
-			    return offState;
-			}
-		    return null;
-		});
+		.AddHandler("start", offState);
 
 		// On State
 		onState.OnEnter((sourceState, targetState) => {
 			Debug.Log(targetState.id + " -> on_enter (from: " +
 			((sourceState != null) ? sourceState.id : "null") + ")");
 		})
-		.AddHandler("off", data => {
-			return offState;
-		})
+		.AddHandler("off", offState, null)
 		.OnExit(nextState => {
 			Debug.Log("on exit -> " + nextState.id);
 		});
@@ -54,9 +47,7 @@ public class StateMachineManager : MonoBehaviour {
 		.OnExit(nextState => {
 			Debug.Log("on on_exit -> " + nextState.id);
 		})
-		.AddHandler("on", data => {
-			return onState;
-		});
+		.AddHandler("on", onState, null);
 		
 		sm.addState(idleState)
 		.addState(onState)
@@ -70,9 +61,6 @@ public class StateMachineManager : MonoBehaviour {
 			debugText.text = e.Message;
 		}
 
-		/*sm.handleEvent("start", new Dictionary<string, object>{
-			{"powered", true}
-		});*/
 		sm.handleEvent("start");
 		sm.handleEvent("on");
 		sm.handleEvent("off");

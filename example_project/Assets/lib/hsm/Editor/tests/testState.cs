@@ -19,17 +19,22 @@ namespace UnitTesting {
 		public void AddHandlerTest() {
 			var state = new State("On");
 			var off = new State("Off");
-			state.AddHandler("foo", data => off);
+			state.AddHandler("foo", off);
 			Expect(state.handlers.Count, EqualTo(1));
 			Expect(state.handlers.ContainsKey("foo"), Is.True);
-			Expect(state.handlers["foo"], Is.InstanceOf(typeof(Func<Dictionary<string, object>, State>)));
-			Expect(state.handlers["foo"].Invoke(new Dictionary<string, object>()), Is.EqualTo(off));
+
+			List<Handler> handlers = state.handlers["foo"];
+			Expect(handlers, Is.InstanceOf(typeof(List<Handler>)));
+
+			Handler handler = handlers[0];
+			Expect(handler.target, Is.InstanceOf(typeof(State)));
+			Expect(handler.action, Is.Null);
 		}
 
 		[Test]
 		public void IsChainable() {
 			var state = new State("OnHold");
-			Expect(state.AddHandler("foo", data => null), Is.EqualTo(state));
+			Expect(state.AddHandler("foo", null), Is.EqualTo(state));
 			Expect(state.OnEnter((s, t) => {}), Is.EqualTo(state));
 			Expect(state.OnExit(n => {}), Is.EqualTo(state));
 		}

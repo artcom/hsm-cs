@@ -22,8 +22,13 @@ namespace Hsm {
 			return state;
 		}
 
-		public static T AddHandler<T>(this T state, string evt, Func<Dictionary<string, object>, State> handler) where T : State {
-			state.handlers[evt] = handler;
+		public static T AddHandler<T>(this T state, string eventName, State target) where T : State {
+			state.createHandler(eventName, target, null);
+			return state;
+		}
+
+		public static T AddHandler<T>(this T state, string eventName, State target, Action<Dictionary<string, object>> action) where T : State {
+			state.createHandler(eventName, target, action);
 			return state;
 		}
 	}
@@ -35,8 +40,7 @@ namespace Hsm {
 		public Action<State, State> enterAction = null;
 		public Action<State, State, Dictionary<string, object>> enterActionWithData = null;
 		public Action<State> exitAction = null;
-		public Dictionary<string, Func<Dictionary<string, object>, State>> handlers =
-			new Dictionary<string, Func<Dictionary<string, object>, State>>();
+		public Dictionary<string, List<Handler>> handlers = new Dictionary<string, List<Handler>>();
 
 		public State(string pId) {
 			id = pId;
@@ -56,6 +60,13 @@ namespace Hsm {
 				exitAction.Invoke(nextState);
 			}
 		}
-	}
 
+		public void createHandler(string eventName, State target, Action<Dictionary<string, object>> action) {
+			Handler handler = new Handler(target, action);
+			if (!handlers.ContainsKey(eventName)) {
+				handlers[eventName] = new List<Handler>();
+			}
+			handlers[eventName].Add(handler);
+		}
+	}
 }

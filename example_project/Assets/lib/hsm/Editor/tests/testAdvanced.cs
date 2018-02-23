@@ -44,19 +44,12 @@ namespace UnitTesting {
 				a1, a2, a3
 			));
 
-			a1.AddHandler("T1", data => {
-				return a2;
-				// We do not (yet) have a proper guard implementation and
-				// cannot express what is depicted in diagram!
-			});
-			a2.AddHandler("T2", data => {
+			a1.AddHandler("T1", a2);
+			a2.AddHandler("T2", a3, data => {
 				sm.handleEvent("T3");
-				return a3;
 			});
 		
-			a3.AddHandler("T3", data => {
-				return a1;
-			});
+			a3.AddHandler("T3", a1);
 			
 			// Statemachine 'b'
 			var b1 = new LoggingState("b1");
@@ -83,9 +76,7 @@ namespace UnitTesting {
 			    new StateMachine(c21, c22)
 			);
 
-			a.AddHandler("ToB", data => {
-				return b;
-			});
+			a.AddHandler("ToB", b);
 			
 			sm = new StateMachine(a, b, c);
 		}
@@ -125,6 +116,7 @@ namespace UnitTesting {
 			}));
 		}
 
+		/*
 		[Test]
 		public void RunToCompletion() {
 			var sub = sm.currentState as Sub;
@@ -147,5 +139,6 @@ namespace UnitTesting {
 				"a1:entered(source:a3)"})
 			);
 		}
+		*/
 	}
 }

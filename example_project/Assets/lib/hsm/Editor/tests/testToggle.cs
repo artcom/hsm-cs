@@ -16,12 +16,12 @@ namespace UnitTesting {
 			State onState = new State("OnState");
 			_sm = new StateMachine(
 				offState
-				.AddHandler("switched_on", data => onState)
+				.AddHandler("switched_on", onState)
 				.OnExit(t => {
 					exitedOffCount += 1;
 				}),
 				onState
-				.AddHandler("switched_off", data => offState)
+				.AddHandler("switched_off", offState)
 				.OnEnter((s, t) => enteredOnCount++)
 			);
 		}

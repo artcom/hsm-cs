@@ -89,11 +89,16 @@ namespace Hsm {
 			if (!currentState.handlers.ContainsKey(evt)) {
 				return false;
 			}
-			State nextstate = currentState.handlers[evt].Invoke(data);
-			if (nextstate != null) {
-				_switchState(currentState, nextstate, data);
-				return true;
+			
+			List<Handler> handlers = currentState.handlers[evt];
+			foreach (Handler handler in handlers) {
+				State nextstate = handler.target;
+				if (nextstate != null) {
+					_switchState(currentState, nextstate, data);
+					return true;
+				}
 			}
+			
 			return false;
 		}
 
