@@ -45,8 +45,12 @@ namespace UnitTesting {
 			));
 
 			a1.AddHandler("T1", a2);
-			a2.AddHandler("T2", a3, data => {
-				log.Add("a2" + ":action(T2)");
+			a1.AddHandler("TI", a1, Transition.Internal, data => {
+				log.Add("a1:action(TI)");
+			});
+
+			a2.AddHandler("T2", a3, Transition.External, data => {
+				log.Add("a2:action(T2)");
 				sm.handleEvent("T3");
 			});
 		
@@ -114,6 +118,27 @@ namespace UnitTesting {
 				"a:exited(target:b)",
 				"b:entered(source:a)",
 				"b1:entered(source:null)"
+			}));
+		}
+
+		[Test]
+		public void TestInternalTransition() {
+			var sub = sm.currentState as Sub;
+			Expect(sub._submachine.currentState.id, Is.EqualTo("a1"));
+
+			log.Clear();
+
+			sm.handleEvent("TI");
+			sm.handleEvent("TI");
+			sm.handleEvent("TI");
+			sm.handleEvent("TI");
+
+			Expect(sub._submachine.currentState.id, Is.EqualTo("a1"));
+			Expect(log, Is.EqualTo(new[] {
+				"a1:action(TI)",
+				"a1:action(TI)",
+				"a1:action(TI)",
+				"a1:action(TI)"
 			}));
 		}
 

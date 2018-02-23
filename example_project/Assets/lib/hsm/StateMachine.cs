@@ -93,9 +93,7 @@ namespace Hsm {
 			
 			List<Handler> handlers = currentState.handlers[evt];
 			foreach (Handler handler in handlers) {
-				State nextstate = handler.target;
-				if (nextstate != null) {
-					_switchState(currentState, nextstate, data, handler.action);
+				if (_performTransition(handler, data)) {
 					return true;
 				}
 			}
@@ -103,18 +101,42 @@ namespace Hsm {
 			return false;
 		}
 
-		public void _enterState(State sourceState, State targetState, Dictionary<string, object> data) {
-			currentState = targetState;
-			targetState.Enter(sourceState, targetState, data);
+		private bool _performTransition(Handler handler, Dictionary<string, object> data) {
+			if (handler.kind == Transition.Internal) {
+				return _performInternalTransition(handler, data);
+			} else {
+				return _performExternalTransition(handler, data);
+			}
 		}
 
-		private void _switchState(State sourceState, State targetState, Dictionary<string, object> data, Action<Dictionary<string, object>> action) {
+		private bool _performExternalTransition(Handler handler, Dictionary<string, object> data) {
+			if (handler.target == null) {
+				return false;
+			}
+			_switchState(currentState, handler.target, handler.action, data);
+			return true;
+		}
+
+		private bool _performInternalTransition(Handler handler, Dictionary<string, object> data) {
+			if (handler.action != null) {
+				handler.action.Invoke(data);
+			}
+			return true;
+		}
+
+		private void _switchState(State sourceState, State targetState, Action<Dictionary<string, object>> action, Dictionary<string, object> data) {
 			sourceState.Exit(targetState);
 			if (action != null) {
 				action.Invoke(data);
 			}
 			_enterState(sourceState, targetState, data);
 		}
+
+		public void _enterState(State sourceState, State targetState, Dictionary<string, object> data) {
+			currentState = targetState;
+			targetState.Enter(sourceState, targetState, data);
+		}
+
 	}
 }
 

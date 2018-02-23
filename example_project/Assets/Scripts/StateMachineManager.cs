@@ -34,7 +34,7 @@ public class StateMachineManager : MonoBehaviour {
 			Debug.Log(targetState.id + " -> on_enter (from: " +
 			((sourceState != null) ? sourceState.id : "null") + ")");
 		})
-		.AddHandler("off", offState, null)
+		.AddHandler("off", offState)
 		.OnExit(nextState => {
 			Debug.Log("on exit -> " + nextState.id);
 		});
@@ -47,7 +47,7 @@ public class StateMachineManager : MonoBehaviour {
 		.OnExit(nextState => {
 			Debug.Log("on on_exit -> " + nextState.id);
 		})
-		.AddHandler("on", onState, null);
+		.AddHandler("on", onState);
 		
 		sm.addState(idleState)
 		.addState(onState)

@@ -23,12 +23,12 @@ namespace Hsm {
 		}
 
 		public static T AddHandler<T>(this T state, string eventName, State target) where T : State {
-			state.createHandler(eventName, target, null);
+			state.createHandler(eventName, target, Transition.External, null);
 			return state;
 		}
 
-		public static T AddHandler<T>(this T state, string eventName, State target, Action<Dictionary<string, object>> action) where T : State {
-			state.createHandler(eventName, target, action);
+		public static T AddHandler<T>(this T state, string eventName, State target, Transition kind, Action<Dictionary<string, object>> action) where T : State {
+			state.createHandler(eventName, target, kind, action);
 			return state;
 		}
 	}
@@ -61,8 +61,8 @@ namespace Hsm {
 			}
 		}
 
-		public void createHandler(string eventName, State target, Action<Dictionary<string, object>> action) {
-			Handler handler = new Handler(target, action);
+		public void createHandler(string eventName, State target, Transition kind, Action<Dictionary<string, object>> action) {
+			Handler handler = new Handler(target, kind, action);
 			if (!handlers.ContainsKey(eventName)) {
 				handlers[eventName] = new List<Handler>();
 			}
