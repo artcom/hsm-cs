@@ -46,6 +46,7 @@ namespace UnitTesting {
 
 			a1.AddHandler("T1", a2);
 			a2.AddHandler("T2", a3, data => {
+				log.Add("a2" + ":action(T2)");
 				sm.handleEvent("T3");
 			});
 		
@@ -116,7 +117,6 @@ namespace UnitTesting {
 			}));
 		}
 
-		/*
 		[Test]
 		public void RunToCompletion() {
 			var sub = sm.currentState as Sub;
@@ -134,11 +134,11 @@ namespace UnitTesting {
 			Expect(sub._submachine.currentState.id, Is.EqualTo("a1"));
 			Expect(log, Is.EqualTo(new[] {
 				"a2:exited(target:a3)",
+				"a2:action(T2)",
 				"a3:entered(source:a2)",
 				"a3:exited(target:a1)",
 				"a1:entered(source:a3)"})
 			);
 		}
-		*/
 	}
 }

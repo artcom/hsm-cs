@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using System;
 using System.Collections.Generic;
 
 namespace Hsm {
@@ -94,7 +95,7 @@ namespace Hsm {
 			foreach (Handler handler in handlers) {
 				State nextstate = handler.target;
 				if (nextstate != null) {
-					_switchState(currentState, nextstate, data);
+					_switchState(currentState, nextstate, data, handler.action);
 					return true;
 				}
 			}
@@ -107,8 +108,11 @@ namespace Hsm {
 			targetState.Enter(sourceState, targetState, data);
 		}
 
-		private void _switchState(State sourceState, State targetState, Dictionary<string, object> data) {
+		private void _switchState(State sourceState, State targetState, Dictionary<string, object> data, Action<Dictionary<string, object>> action) {
 			sourceState.Exit(targetState);
+			if (action != null) {
+				action.Invoke(data);
+			}
 			_enterState(sourceState, targetState, data);
 		}
 	}
