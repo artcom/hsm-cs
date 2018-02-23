@@ -92,38 +92,15 @@ namespace Hsm {
 			
 			List<Handler> handlers = currentState.handlers[evt];
 			foreach (Handler handler in handlers) {
-				if (_performTransition(handler, data)) {
+				Transition transition = new Transition(currentState, handler);
+				if (transition.performTransition(data, this)) {
 					return true;
 				}
 			}
-			
 			return false;
 		}
 
-		private bool _performTransition(Handler handler, Dictionary<string, object> data) {
-			if (handler.kind == TransitionKind.Internal) {
-				return _performInternalTransition(handler, data);
-			} else {
-				return _performExternalTransition(handler, data);
-			}
-		}
-
-		private bool _performExternalTransition(Handler handler, Dictionary<string, object> data) {
-			if (handler.target == null) {
-				return false;
-			}
-			_switchState(currentState, handler.target, handler.action, data);
-			return true;
-		}
-
-		private bool _performInternalTransition(Handler handler, Dictionary<string, object> data) {
-			if (handler.action != null) {
-				handler.action.Invoke(data);
-			}
-			return true;
-		}
-
-		private void _switchState(State sourceState, State targetState, Action<Dictionary<string, object>> action, Dictionary<string, object> data) {
+		public void _switchState(State sourceState, State targetState, Action<Dictionary<string, object>> action, Dictionary<string, object> data) {
 			sourceState.Exit(targetState);
 			if (action != null) {
 				action.Invoke(data);
