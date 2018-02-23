@@ -93,7 +93,7 @@ namespace Hsm {
 			List<Handler> handlers = currentState.handlers[evt];
 			foreach (Handler handler in handlers) {
 				Transition transition = new Transition(currentState, handler);
-				if (transition.performTransition(data, this)) {
+				if (transition.performTransition(data)) {
 					return true;
 				}
 			}

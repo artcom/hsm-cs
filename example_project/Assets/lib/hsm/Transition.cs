@@ -18,19 +18,20 @@ namespace Hsm {
 			this.action = handler.action;
 		}
 
-		public bool performTransition(Dictionary<string, object> data, StateMachine stateMachine) {
+		public bool performTransition(Dictionary<string, object> data) {
 			if (kind == TransitionKind.Internal) {
 				return _performInternalTransition(data);
 			} else {
-				return _performExternalTransition(data, stateMachine);
+				return _performExternalTransition(data);
 			}
 		}
 
-		private bool _performExternalTransition(Dictionary<string, object> data, StateMachine stateMachine) {
+		private bool _performExternalTransition(Dictionary<string, object> data) {
 			if (target == null) {
 				return false;
 			}
-			stateMachine._switchState(source, target, action, data);
+			StateMachine lca = _findLeastCommonAncestor();
+			lca._switchState(source, target, action, data);
 			return true;
 		}
 
@@ -39,6 +40,17 @@ namespace Hsm {
 				action.Invoke(data);
 			}
 			return true;
+		}
+
+		private StateMachine _findLeastCommonAncestor() {
+			List<StateMachine> sourcePath = source.owner.getPath();
+			List<StateMachine> targetPath = target.owner.getPath();
+			foreach(StateMachine stateMachine in sourcePath) {
+				if (targetPath.Contains(stateMachine)) {
+					return stateMachine;
+				}
+			}
+			return null;
 		}
 	}
 
