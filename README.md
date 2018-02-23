@@ -75,7 +75,7 @@ a3.AddHandler("T3", (data) => {
 
 This version of Hsm does only support simple event handlers. In the state machine terminology it can be said that only actions are supported.
 
-An Action has to return a string, which is the id of a sibling state (or self.id for reentering the same state). In case a handler should not result in a state transition `null` can be returned.
+An Action has to return the target state or self for reentering the same state. In case a handler should not result in a state transition `null` can be returned.
 
 # Guards
 
