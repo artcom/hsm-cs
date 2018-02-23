@@ -18,11 +18,12 @@ namespace UnitTesting {
 		[Test]
 		public void AddHandlerTest() {
 			var state = new State("On");
-			state.AddHandler("foo", data => "Off");
+			var off = new State("Off");
+			state.AddHandler("foo", data => off);
 			Expect(state.handlers.Count, EqualTo(1));
 			Expect(state.handlers.ContainsKey("foo"), Is.True);
-			Expect(state.handlers["foo"], Is.InstanceOf(typeof(Func<Dictionary<string, object>, String>)));
-			Expect(state.handlers["foo"].Invoke(new Dictionary<string, object>()), Is.EqualTo("Off"));
+			Expect(state.handlers["foo"], Is.InstanceOf(typeof(Func<Dictionary<string, object>, State>)));
+			Expect(state.handlers["foo"].Invoke(new Dictionary<string, object>()), Is.EqualTo(off));
 		}
 
 		[Test]

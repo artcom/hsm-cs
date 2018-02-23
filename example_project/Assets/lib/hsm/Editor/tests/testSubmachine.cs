@@ -16,15 +16,15 @@ namespace UnitTesting {
 
 		[Test]
 		public void QuietLoud() {
+			State quiet = new State("Quiet");
+			State loud = new State("Loud");
+			State offState = new State("OffState");
 			Sub onState = new Sub("OnState", new StateMachine(
-				new State("Quiet")
-					.AddHandler("volume_up", data => "Loud"),
-				new State("Loud")
-					.AddHandler("volume_down", data => "Quiet")
-			))
-				.AddHandler("switched_off", data => "OffState"); 
-			State offState = new State("OffState")
-				.AddHandler("switched_on", data => "OnState");
+				quiet.AddHandler("volume_up", data => loud),
+				loud.AddHandler("volume_down", data => quiet)
+			));
+			onState.AddHandler("switched_off", data => offState);
+			offState.AddHandler("switched_on", data => onState);
 
 			var sm = new StateMachine(offState, onState);
 			sm.setup();
@@ -50,14 +50,19 @@ namespace UnitTesting {
 
 		[Test]
 		public void SimpleSub() {
-			var powered_on_sub = new Sub("powered_on", new StateMachine(
-				new State("on").AddHandler("off", data => "off"),
-				new State("off").AddHandler("on", data => "on")
-			))
-			.AddHandler("power_off", data => "powered_off");
+			State onState = new State("on");
+			State offState = new State("off");
+			
+			State powered_off = new State("powered_off");
+			Sub powered_on = new Sub("powered_on", new StateMachine(
+				onState.AddHandler("off", data => offState),
+				offState.AddHandler("on", data => onState)
+			));
+			
+			powered_on.AddHandler("power_off", data => powered_off);
 			var sm = new StateMachine(
-				new State("powered_off").AddHandler("power_on", data => "powered_on"),
-				powered_on_sub
+				powered_off.AddHandler("power_on", data => powered_on),
+				powered_on
 			);
 			sm.setup();
 			Expect(sm.currentState.id, Is.EqualTo("powered_off"));

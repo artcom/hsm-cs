@@ -14,9 +14,13 @@ public class StateMachineManager : MonoBehaviour {
 	void Start() {
 		sm = new StateMachine();
 
+		
+		State idleState = new State("idle");
+		State onState = new State("on");
+		State offState = new State("off");
+		
 		// Idle State
-		State idleState = new State("idle")
-		.OnEnter((sourceState, targetState) => {
+		idleState.OnEnter((sourceState, targetState) => {
 			Debug.Log(targetState.id + " -> on_enter (from: " +
 			((sourceState != null) ? sourceState.id : "null") + ")");
 		})
@@ -25,27 +29,25 @@ public class StateMachineManager : MonoBehaviour {
 		})
 		.AddHandler("start", data => {
     	    if (data.ContainsKey("powered") && data["powered"].Equals(true)) {
-			    return "off";
+			    return offState;
 			}
 		    return null;
 		});
 
 		// On State
-		State onState = new State("on")
-		.OnEnter((sourceState, targetState) => {
+		onState.OnEnter((sourceState, targetState) => {
 			Debug.Log(targetState.id + " -> on_enter (from: " +
 			((sourceState != null) ? sourceState.id : "null") + ")");
 		})
 		.AddHandler("off", data => {
-			return "off";
+			return offState;
 		})
 		.OnExit(nextState => {
 			Debug.Log("on exit -> " + nextState.id);
 		});
 
 		// Off State
-		State offState = new State("off")
-		.OnEnter((sourceState, targetState) => {
+		offState.OnEnter((sourceState, targetState) => {
 			Debug.Log(targetState.id + " -> on_enter (from: " +
 			((sourceState != null) ? sourceState.id : "null") + ")");
 		})
@@ -53,7 +55,7 @@ public class StateMachineManager : MonoBehaviour {
 			Debug.Log("on on_exit -> " + nextState.id);
 		})
 		.AddHandler("on", data => {
-			return "on";
+			return onState;
 		});
 		
 		sm.addState(idleState)

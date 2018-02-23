@@ -89,8 +89,7 @@ namespace Hsm {
 			if (!currentState.handlers.ContainsKey(evt)) {
 				return false;
 			}
-			string result = currentState.handlers[evt].Invoke(data);
-			State nextstate = states.Find(state => state.id == result);
+			State nextstate = currentState.handlers[evt].Invoke(data);
 			if (nextstate != null) {
 				_switchState(currentState, nextstate, data);
 				return true;

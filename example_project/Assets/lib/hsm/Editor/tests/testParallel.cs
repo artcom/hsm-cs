@@ -40,23 +40,28 @@ namespace UnitTesting {
 
 		[Test]
 		public void Keyboard() {
+			State numLockOff = new State("NumLockOff");
+			State numLockOn = new State("NumLockOn");
 			var _numlockMachine = new StateMachine(
-				new State("NumLockOff").AddHandler("numlock", data => "NumLockOn"),
-				new State("NumLockOn").AddHandler("numlock", data => "NumLockOff")
+				numLockOff.AddHandler("numlock", data => numLockOn),
+				numLockOn.AddHandler("numlock", data => numLockOff)
 			);
+			State capsLockOff = new State("CapsLockOff");
+			State capsLockOn = new State("CapsLockOn");
 			var _capslockMachine = new StateMachine(
-				new State("CapsLockOff").AddHandler("capslock", data => "CapsLockOn"),
-				new State("CapsLockOn").AddHandler("capslock", data => "CapsLockOff")
+				capsLockOff.AddHandler("capslock", data => capsLockOn),
+				capsLockOn.AddHandler("capslock", data => capsLockOff)
 			);
 
-			Parallel keyBoardOnState = new Parallel("KeyboardOn", new[] {
+			State keyBoardOff = new State("KeyboardOff");
+			Parallel keyBoardOn = new Parallel("KeyboardOn", new[] {
 				_capslockMachine,
 				_numlockMachine
-			}).AddHandler("unplug", data => "KeyboardOff");
+			}).AddHandler("unplug", data => keyBoardOff);
 
 			var sm = new StateMachine(
-				new State("KeyboardOff").AddHandler("plug", data => "KeyboardOn"),
-				keyBoardOnState
+				keyBoardOff.AddHandler("plug", data => keyBoardOn),
+				keyBoardOn
 			);
 			sm.setup();
 

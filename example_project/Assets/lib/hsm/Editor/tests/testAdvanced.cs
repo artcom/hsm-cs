@@ -37,27 +37,25 @@ namespace UnitTesting {
 
 		public AdvancedTests() {
 			// Statemachine 'a'
-			LoggingState a1 = new LoggingState("a1")
-				.AddHandler("T1", data => {
-					return "a2";
-					// We do not (yet) have a proper guard implementation and
-					// cannot express what is depicted in diagram!
-				});
-			LoggingState a2 = new LoggingState("a2")
-				.AddHandler("T2", data => {
-					sm.handleEvent("T3");
-					return "a3";
-				});
-			LoggingState a3 = new LoggingState("a3")
-				.AddHandler("T3", data => {
-					return "a1";
-				});
-			
+			LoggingState a1 = new LoggingState("a1");
+			LoggingState a2 = new LoggingState("a2");
+			LoggingState a3 = new LoggingState("a3");	
 			Sub a = new LoggingSub("a", new StateMachine(
 				a1, a2, a3
-			))
-			.AddHandler("ToB", data => {
-				return "b";
+			));
+
+			a1.AddHandler("T1", data => {
+				return a2;
+				// We do not (yet) have a proper guard implementation and
+				// cannot express what is depicted in diagram!
+			});
+			a2.AddHandler("T2", data => {
+				sm.handleEvent("T3");
+				return a3;
+			});
+		
+			a3.AddHandler("T3", data => {
+				return a1;
 			});
 			
 			// Statemachine 'b'
@@ -84,6 +82,11 @@ namespace UnitTesting {
 			    new StateMachine(c11, c12),
 			    new StateMachine(c21, c22)
 			);
+
+			a.AddHandler("ToB", data => {
+				return b;
+			});
+			
 			sm = new StateMachine(a, b, c);
 		}
 		
