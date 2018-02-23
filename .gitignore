@@ -19,3 +19,5 @@ bower_packages*
 /example_project/Assets/test-results/
 
 /doc/generated/
+
+/output
