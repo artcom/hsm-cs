@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Hsm {
 
-	public enum Transition {
+	public enum TransitionKind {
 		External,
 		Internal
 	}

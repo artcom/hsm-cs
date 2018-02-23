@@ -45,11 +45,11 @@ namespace UnitTesting {
 			));
 
 			a1.AddHandler("T1", a2);
-			a1.AddHandler("TI", a1, Transition.Internal, data => {
+			a1.AddHandler("TI", a1, TransitionKind.Internal, data => {
 				log.Add("a1:action(TI)");
 			});
 
-			a2.AddHandler("T2", a3, Transition.External, data => {
+			a2.AddHandler("T2", a3, TransitionKind.External, data => {
 				log.Add("a2:action(T2)");
 				sm.handleEvent("T3");
 			});

@@ -102,7 +102,7 @@ namespace Hsm {
 		}
 
 		private bool _performTransition(Handler handler, Dictionary<string, object> data) {
-			if (handler.kind == Transition.Internal) {
+			if (handler.kind == TransitionKind.Internal) {
 				return _performInternalTransition(handler, data);
 			} else {
 				return _performExternalTransition(handler, data);
