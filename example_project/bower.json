@@ -1,8 +1,9 @@
 {
   "name": "hsm",
-  "version": "2.0.2",
+  "version": "3.0.0",
   "authors": [
-    "Andreas Marr <andreasm@artcom.de>"
+    "Andreas Marr <andreasm@artcom.de>",
+    "Julian Krumow <julian.krumow@artcom.de>"
   ],
   "description": "Hierarchical Statemachine following http://en.wikipedia.org/wiki/UML_state_machine",
   "keywords": [
@@ -10,7 +11,7 @@
     "hierachical"
   ],
   "license": "MIT",
-  "homepage": "www.artcom.de",
+  "homepage": "https://www.artcom.de",
   "ignore": [
     "**/.*",
     "doc",
