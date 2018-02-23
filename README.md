@@ -18,7 +18,7 @@ States are specific by creating Hsm.State instances. They are then composed to a
 
 ![image](doc/exports/simple.png)
 
-~~~
+```cs
 using Hsm;
 
 State a1 = new State("a1");
@@ -26,11 +26,11 @@ State a2 = new State("a2");
 State a3 = new State("a3");
 
 StateMachine a = new StateMachine(a1, a2, a3);
-~~~
+```
 
 Alternatively the state machine can also be constructed in several other way. For more details see the [Instantiate*-tests](lib/hsm/Editor/tests/testStateMachine.cs):
 
-~~~
+```cs
 using Hsm;
 
 // one big constuctor
@@ -51,35 +51,15 @@ StateMachine a = new StateMachine()
 .AddState(new State("a1"))
 .AddState(new State("a2"))
 .AddState(new State("a3"));
-~~~
+```
 
 By Convention, the first state passed is the initial state. The state machine is then initialized by
 
-~~~~
+```cs
 a.setup();
-~~~~
+```
 
 This starts the state machine and activates the initial state, calling its enter handler (see below). The state machine is now ready to handle events.
-
-# Actions and State Transitions
-
-Each state has a map of event handlers. These handlers will be called when the state receives the respective event. Event handlers are added to the handlers list of each state (based on previous example state machine `a`):
-
-![image](doc/exports/simpleWithTransition.png)
-
-~~~
-a3.AddHandler("T3", (data) => {
-    return "a1";
-});
-~~~
-
-This version of Hsm does only support simple event handlers. In the state machine terminology it can be said that only actions are supported.
-
-An Action has to return the target state or self for reentering the same state. In case a handler should not result in a state transition `null` can be returned.
-
-# Guards
-
-Guards are currently not implemented. For inspiration on what this could look like see: https://github.com/Mask/hsm-js
 
 # Entry and Exit handlers
 
@@ -87,7 +67,7 @@ Each state can have an `exitAction` and an `enterAction`. They will be invoked w
 
 Example of specifying enter/exit actions (using chaining):
 
-~~~
+```cs
 using Hsm;
 
 State a = new State("a")
@@ -97,7 +77,43 @@ State a = new State("a")
 .OnEnter((sourceState, targetState) => {
     // your code here
 });
-~~~
+```
+
+# Actions and State Transitions
+
+Each state has a map of event handlers. These handlers will be called when the state receives the respective event. Event handlers are added to the handlers list of each state (based on previous example state machine `a`):
+
+![image](doc/exports/simpleWithTransition.png)
+
+```cs
+a3.AddHandler("T3", a2);
+a3.AddHandler("T3", a2, data => {
+    // ...
+});
+```
+
+# Internal, External and Local Transitions
+
+Internal and External can be selected by using the `Transition` enum:
+
+```cs
+a3.AddHandler("T3", a2); // external by default
+a3.AddHandler("T3", a2, Transition.External);
+a3.AddHandler("TI", a3, Transition.Internal, data => {
+    // ...
+});
+```
+
+External transitions are used by default. When using internal transitions target state must be the similar to the handling state.
+
+Local Transitions are currently not implemented. For inspiration on what this could look like see:
+
+* [Local vs. external transitions](http://en.wikipedia.org/wiki/UML_state_machine#Local_versus_external_transitions)
+
+
+# Guards
+
+Guards are currently not implemented. For inspiration on what this could look like see: https://github.com/Mask/hsm-js
 
 # Sub-StateMachines (nested)
 
@@ -107,7 +123,7 @@ All events are propagated into the sub-state machines, and the sub state machine
 
 ![image](doc/exports/simpleSub.png)
 
-~~~
+```cs
 using Hsm;
 
 Sub a = new Sub("a", new StateMachine(
@@ -115,7 +131,7 @@ Sub a = new Sub("a", new StateMachine(
     new State(a2),
     new State(a3)
 ));
-~~~
+```
 
 For more details on how to construct a Hsm.Sub consult the [tests](lib/hsm/Editor/tests/testSubmachine.cs).
 
@@ -131,7 +147,7 @@ All events are propagated to all contained orthogonal state machines contained i
 
 ![image](doc/exports/simpleParallel.png)
 
-~~~
+```cs
 using Hsm;
 
 Parallel c = new Parallel("c",
@@ -144,16 +160,9 @@ Parallel c = new Parallel("c",
         new State("c22")
     )
 );
-~~~
+```
 
 For more details on how to construct a Hsm.Parallel consult the [tests](lib/hsm/Editor/tests/testParallel.cs).
-
-# Internal, External and Local Transitions
-
-Internal, External and Local Transitions are currently not implemented. For inspiration on what this could look like see:
-
-* [Internal Transitions](http://en.wikipedia.org/wiki/UML_state_machine#Internal_transitions)
-* [Local vs. external transitions](http://en.wikipedia.org/wiki/UML_state_machine#Local_versus_external_transitions)
 
 # Development Setup
 
@@ -161,26 +170,24 @@ In order to use the `hsm` as bower package dependency in your unity project (`$ 
 
 * `.bowerrc` file specifying the repository url and target folder:
 
-    ~~~
-    {
-	    "registry": "<repository_url>",
-  		"directory": "Assets/bower_packages" 
-	}
-    ~~~
+```json
+{
+    "registry": "<repository_url>",
+	"directory": "Assets/bower_packages" 
+}
+```
 
 * `bower.json` file specifying the dependency name and wanted version:
 
-    ~~~
-    {
-        "name" : "<some application name>",
-        ...
-        "dependencies": {
-            "hsm" : "latest"
-        }
+```json
+{
+    "name" : "<some application name>",
+    ...
+    "dependencies": {
+        "hsm" : "latest"
     }
-    ~~~
-
-
+}
+```
 
 ## Generating API documentation
 
@@ -188,8 +195,8 @@ In order to use the `hsm` as bower package dependency in your unity project (`$ 
 
 Execute
 
-~~~
+```sh
 doxygen doc/doxygen/doxygenConfig
-~~~
+```
 
 to generate html documentation. It will be put at `doc/generated/html`
