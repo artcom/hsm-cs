@@ -164,27 +164,17 @@ For more details on how to construct a Hsm.Parallel consult the [tests](lib/hsm/
 
 # Development Setup
 
-In order to use the `hsm` as bower package dependency in your unity project (`$ bower install`) create or edit the following files in your projects folder:
+Install dependencies:
 
-* `.bowerrc` file specifying the repository url and target folder:
-
-```json
-{
-    "registry": "<repository_url>",
-	"directory": "Assets/bower_packages" 
-}
+```sh
+cd example_project
+bower install
 ```
 
-* `bower.json` file specifying the dependency name and wanted version:
+To run the test suite:
 
-```json
-{
-    "name" : "<some application name>",
-    ...
-    "dependencies": {
-        "hsm" : "latest"
-    }
-}
+```sh
+$Unity_APP -runTests -projectPath `pwd` -testResults ../output/editormodeTests.xml -testPlatform editmode -batchmode -logFile
 ```
 
 ## Generating API documentation
