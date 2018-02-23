@@ -155,12 +155,6 @@ Internal, External and Local Transitions are currently not implemented. For insp
 * [Internal Transitions](http://en.wikipedia.org/wiki/UML_state_machine#Internal_transitions)
 * [Local vs. external transitions](http://en.wikipedia.org/wiki/UML_state_machine#Local_versus_external_transitions)
 
-# Event deferral
-
-Event deferral is currently not implemented. For inspiration on what this could look like see:
-
-* [Event deferral](http://en.wikipedia.org/wiki/UML_state_machine#Event_deferral)
-
 # Development Setup
 
 In order to use the `hsm` as bower package dependency in your unity project (`$ bower install`) create or edit the following files in your projects folder:
