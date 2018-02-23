@@ -27,6 +27,11 @@ namespace Hsm {
 			return state;
 		}
 
+		public static T AddHandler<T>(this T state, string eventName, State target, TransitionKind kind) where T : State {
+			state.createHandler(eventName, target, kind, null);
+			return state;
+		}
+
 		public static T AddHandler<T>(this T state, string eventName, State target, Action<Dictionary<string, object>> action) where T : State {
 			state.createHandler(eventName, target, TransitionKind.External, action);
 			return state;
