@@ -14,6 +14,8 @@ bower_packages*
 *.pidb
 *.booproj
 
+.vscode
+
 /example_project/Assets/test-results/
 
 /doc/generated/
