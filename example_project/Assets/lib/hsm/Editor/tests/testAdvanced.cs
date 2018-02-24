@@ -104,6 +104,15 @@ namespace UnitTesting {
 
 			a1.AddHandler("T8", b322);
 			b311.AddHandler("T9", a1);
+
+			a.AddHandler("T10", b3);
+
+			b311.AddHandler("T11", b311, TransitionKind.Internal, data => {
+				log.Add("b311:action(T11)");
+			});
+			b321.AddHandler("T11", b321, TransitionKind.Internal, data => {
+				log.Add("b321:action(T11)");
+			});
 			
 			sm = new StateMachine(a, b);
 		}
@@ -174,6 +183,21 @@ namespace UnitTesting {
 				"a1:action(TI)",
 				"a1:action(TI)",
 				"a1:action(TI)"
+			}));
+		}
+
+		[Test]
+		public void TestInternalTransitionParallel() {
+			sm.handleEvent("T10");
+			var sub = sm.currentState as Sub;
+			Expect(sub._submachine.currentState.id, Is.EqualTo("b3"));
+
+			log.Clear();
+
+			sm.handleEvent("T11");
+			Expect(log, Is.EqualTo(new[] {
+				"b311:action(T11)",
+				"b321:action(T11)"
 			}));
 		}
 
