@@ -71,10 +71,10 @@ Example of specifying enter/exit actions (using chaining):
 using Hsm;
 
 State a = new State("a")
-.OnExit((targetState) => {
+.OnExit((data) => {
     // your code here
 })
-.OnEnter((sourceState, targetState) => {
+.OnEnter((data) => {
     // your code here
 });
 ```
@@ -172,15 +172,3 @@ To run the test suite:
 ```sh
 $Unity_APP -runTests -projectPath `pwd` -testResults ../output/editormodeTests.xml -testPlatform editmode -batchmode -logFile
 ```
-
-## Generating API documentation
-
-* *Requires* `doxygen` & `graphviz` (e.g. `brew install doxygen graphviz` on OS X)
-
-Execute
-
-```sh
-doxygen doc/doxygen/doxygenConfig
-```
-
-to generate html documentation. It will be put at `doc/generated/html`
