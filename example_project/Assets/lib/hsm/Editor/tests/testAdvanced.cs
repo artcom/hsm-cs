@@ -65,7 +65,7 @@ namespace UnitTesting {
 			var b21 = new LoggingState("b21");
 			var b22 = new LoggingState("b22");
 			
-			var b2 = new Sub("b2", new StateMachine(
+			var b2 = new LoggingSub("b2", new StateMachine(
 				b21, b22
 			));
 			
@@ -74,6 +74,9 @@ namespace UnitTesting {
 			));
 
 			a.AddHandler("T4", b2);
+			a.AddHandler("T5", b);
+			b.AddHandler("T8", b22, TransitionKind.Local);
+			b22.AddHandler("T9", b, TransitionKind.Local);
 			
 			// Statemachine 'c'
 			var c11 = new LoggingState("c11");
@@ -158,6 +161,37 @@ namespace UnitTesting {
 				"a1:action(TI)",
 				"a1:action(TI)",
 				"a1:action(TI)"
+			}));
+		}
+
+		[Test]
+		public void TestLocalTransition() {
+			sm.handleEvent("T5");
+
+			var sub = sm.currentState as Sub;
+			Expect(sub._submachine.currentState.id, Is.EqualTo("b1"));
+
+			
+			log.Clear();
+
+			sm.handleEvent("T8");
+
+			var subsub = sub._submachine.currentState as Sub;
+			Expect(subsub._submachine.currentState.id, Is.EqualTo("b22"));
+			Expect(log, Is.EqualTo(new[] {
+				"b1:exited(target:b22)",
+				"b2:entered(source:b)",
+				"b22:entered(source:b)"
+			}));
+
+			log.Clear();
+
+			sm.handleEvent("T9");
+			Expect(sub._submachine.currentState.id, Is.EqualTo("b1"));
+			Expect(log, Is.EqualTo(new[] {
+				"b22:exited(target:null)",
+				"b2:exited(target:b)",
+				"b1:entered(source:b22)"
 			}));
 		}
 

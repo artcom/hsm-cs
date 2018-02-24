@@ -6,12 +6,12 @@ namespace Hsm {
 
 	public class Handler {
 
-		public State target;
+		public State targetState;
 		public TransitionKind kind;
 		public Action<Dictionary<string, object>> action;
 		
-		public Handler(State target, TransitionKind kind, Action<Dictionary<string, object>> action) {
-			this.target = target;
+		public Handler(State targetState, TransitionKind kind, Action<Dictionary<string, object>> action) {
+			this.targetState = targetState;
 			this.kind = kind;
 			this.action = action;
 		}

@@ -90,6 +90,16 @@ namespace Hsm {
 			handlers[eventName].Add(handler);
 		}
 
+		public bool hasAncestor(State other) {
+			if (owner.container == null) {
+				return false;
+			}
+			if (owner.container == other) {
+				return true;
+			}
+			return owner.container.hasAncestor(other);
+		}
+
 		public bool hasAncestorStateMachine(StateMachine stateMachine) {
 			for (var i = 0; i < owner.getPath().Count; ++i) {
 				if (owner.getPath()[i] == stateMachine) {

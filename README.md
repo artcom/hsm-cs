@@ -92,29 +92,20 @@ a3.AddHandler("T3", a2, data => {
 });
 ```
 
-# Internal, External
+# External, Internal and Local Transitions
 
-Internal and External can be selected by using the `Transition` enum:
+External, internal and local transitions can be selected by using the `Transition` enum:
 
 ```cs
 a3.AddHandler("T3", a2); // external by default
 a3.AddHandler("T3", a2, Transition.External);
+a.AddHandler("T3", a2, Transition.Local);
 a3.AddHandler("TI", a3, Transition.Internal, data => {
     // ...
 });
 ```
 
 External transitions are used by default. When using internal transitions target state must be the similar to the handling state.
-
-# Local Transitions (not implemented)
-
-Local Transitions are currently not implemented. For inspiration on what this could look like see:
-
-* [Local vs. external transitions](http://en.wikipedia.org/wiki/UML_state_machine#Local_versus_external_transitions)
-
-# Guards (not implemented)
-
-Guards are currently not implemented. For inspiration on what this could look like see: https://github.com/Mask/hsm-js
 
 # Sub-StateMachines (nested)
 
@@ -135,7 +126,6 @@ Sub a = new Sub("a", new StateMachine(
 ```
 
 For more details on how to construct a Hsm.Sub consult the [tests](lib/hsm/Editor/tests/testSubmachine.cs).
-
 
 # Parallel State-Machines (orthogonal regions)
 
@@ -161,6 +151,12 @@ Parallel c = new Parallel("c",
 ```
 
 For more details on how to construct a Hsm.Parallel consult the [tests](lib/hsm/Editor/tests/testParallel.cs).
+
+# Guard Conditions (not implemented)
+
+Guard Conditions are currently not implemented. If guard conditions need to be used the state machine model is probably incomplete since guards check things which are outside of your state model.
+
+For inspiration on what this could look like see: https://github.com/Mask/hsm-js
 
 # Development Setup
 

@@ -1,10 +1,6 @@
 Necessary features for UML conformity:
 
-- local transitions
-- guards
-- pseudostates
+- test orthogonal regions
 
-## setup
-
-- reference files from outside the project ??
+- update project structure
 - add build job

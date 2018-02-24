@@ -6,6 +6,7 @@ namespace Hsm {
 
 	public enum TransitionKind {
 		External,
-		Internal
+		Internal,
+		Local
 	}
 }

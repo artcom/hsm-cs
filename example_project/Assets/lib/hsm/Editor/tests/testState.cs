@@ -27,7 +27,7 @@ namespace UnitTesting {
 			Expect(handlers, Is.InstanceOf(typeof(List<Handler>)));
 
 			Handler handler = handlers[0];
-			Expect(handler.target, Is.InstanceOf(typeof(State)));
+			Expect(handler.targetState, Is.InstanceOf(typeof(State)));
 			Expect(handler.action, Is.Null);
 		}
 

@@ -6,14 +6,14 @@ namespace Hsm {
 
 	public class Transition {
 
-		private State source;
-		private State target;
+		private State sourceState;
+		private State targetState;
 		private TransitionKind kind;
 		private Action<Dictionary<string, object>> action;
 
-		public Transition (State source, Handler handler) {
-			this.source = source;
-			this.target = handler.target;
+		public Transition (State sourceState, Handler handler) {
+			this.sourceState = sourceState;
+			this.targetState = handler.targetState;
 			this.kind = handler.kind;
 			this.action = handler.action;
 		}
@@ -27,11 +27,11 @@ namespace Hsm {
 		}
 
 		private bool _performExternalTransition(Dictionary<string, object> data) {
-			if (target == null) {
+			if (targetState == null) {
 				return false;
 			}
 			StateMachine lca = _findLeastCommonAncestor();
-			lca.switchState(source, target, action, data);
+			lca.switchState(sourceState, targetState, action, data);
 			return true;
 		}
 
@@ -43,16 +43,24 @@ namespace Hsm {
 		}
 
 		private StateMachine _findLeastCommonAncestor() {
-			List<StateMachine> sourcePath = source.owner.getPath();
-			List<StateMachine> targetPath = target.owner.getPath();
+			List<StateMachine> sourcePath = sourceState.owner.getPath();
+			List<StateMachine> targetPath = targetState.owner.getPath();
 
+			StateMachine lca = null;
 			for (var i = sourcePath.Count-1; i >= 0; i--) {
 				StateMachine stateMachine = sourcePath[i];
 				if (targetPath.Contains(stateMachine)) {
-					return stateMachine;
+					lca = stateMachine;
+					break;
 				}
 			}
-			return null;
+			if (kind == TransitionKind.Local) {
+				if (sourceState.hasAncestor(targetState) || targetState.hasAncestor(sourceState)) {
+					Sub containingSubState = lca.currentState as Sub;
+					lca = containingSubState._submachine;
+				}
+			}
+			return lca;
 		}
 	}
 
