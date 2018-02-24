@@ -4,15 +4,13 @@
 
 A hierarchical statemachine for Unity implemented in C#
 
-The Hsm allows programmatic declaration of states and event handlers.
-
-The Hsm follows the [UML-Statemachine](http://en.wikipedia.org/wiki/UML_state_machine) specs.
-
-The following state machine is used [in the tests](lib/hsm/Editor/tests):
-
 ![image](doc/exports/advanced.png)
 
-# States and State Machines
+## Installation
+
+To install this library add `hsm` to your bower file and run `bower install`.
+
+## States and State Machines
 
 States are specific by creating Hsm.State instances. They are then composed to a state machine by passing them to the Hsm.StateMachine constructor.
 
@@ -61,7 +59,7 @@ a.setup();
 
 This starts the state machine and activates the initial state, calling its enter handler (see below). The state machine is now ready to handle events.
 
-# Entry and Exit handlers
+## Entry and Exit handlers
 
 Each state can have an `exitAction` and an `enterAction`. They will be invoked when a state is entered or exited.
 
@@ -79,7 +77,7 @@ State a = new State("a")
 });
 ```
 
-# Actions and State Transitions
+## Actions and State Transitions
 
 Each state has a map of event handlers. These handlers will be called when the state receives the respective event. Event handlers are added to the handlers list of each state (based on previous example state machine `a`):
 
@@ -92,22 +90,27 @@ a3.AddHandler("T3", a2, data => {
 });
 ```
 
-# External, Internal and Local Transitions
+## External, Internal and Local Transitions
 
 External, internal and local transitions can be selected by using the `Transition` enum:
 
 ```cs
-a3.AddHandler("T3", a2); // external by default
-a3.AddHandler("T3", a2, Transition.External);
-a.AddHandler("T3", a2, Transition.Local);
-a3.AddHandler("TI", a3, Transition.Internal, data => {
+a.AddHandler("T4", a2, Transition.Local);
+a3.AddHandler("TI", a1, Transition.Internal, data => {
     // ...
 });
 ```
 
-External transitions are used by default. When using internal transitions target state must be the similar to the handling state.
+![image](doc/exports/simpleWithInternalAndLocalTransition.png)
 
-# Sub-StateMachines (nested)
+External transitions are used by default. When using internal transitions target state must be the similar to the handling state:
+
+```cs
+a3.AddHandler("T3", a2); // external by default
+a3.AddHandler("T3", a2, Transition.External);
+```
+
+## Sub-StateMachines (nested)
 
 StateMachines can be nested in other state machines by using the `Hsm.Sub` adapter class.
 
@@ -127,7 +130,7 @@ Sub a = new Sub("a", new StateMachine(
 
 For more details on how to construct a Hsm.Sub consult the [tests](lib/hsm/Editor/tests/testSubmachine.cs).
 
-# Parallel State-Machines (orthogonal regions)
+## Parallel State-Machines (orthogonal regions)
 
 Parallel state machines are constructed with the Hsm.Parallel adapter class.
 
@@ -152,13 +155,11 @@ Parallel c = new Parallel("c",
 
 For more details on how to construct a Hsm.Parallel consult the [tests](lib/hsm/Editor/tests/testParallel.cs).
 
-# Guard Conditions (not implemented)
+## Guard Conditions (not implemented)
 
-Guard Conditions are currently not implemented. If guard conditions need to be used the state machine model is probably incomplete since guards check things which are outside of your state model.
+Guard Conditions are currently not implemented. If you need to use guard conditions your state machine model is probably incomplete because guards check on things that are outside of your state model.
 
-For inspiration on what this could look like see: https://github.com/Mask/hsm-js
-
-# Development Setup
+## Development Setup
 
 Install dependencies:
 
