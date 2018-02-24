@@ -89,6 +89,9 @@ namespace Hsm {
 				}
 			}
 			
+			if (currentState == null) {
+				return false;
+			}
 			if (!currentState.handlers.ContainsKey(evt)) {
 				return false;
 			}

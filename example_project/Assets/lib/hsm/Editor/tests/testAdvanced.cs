@@ -16,11 +16,11 @@ namespace UnitTesting {
 				this.id = pId;
 			}
 			public override void Enter(State sourceState, State targetstate, Dictionary<string, object> data) {
-				log.Add(id + ":entered(source:" + ((sourceState != null) ? sourceState.id : "null") + ")");
+				log.Add(id + ":entered");
 				base.Enter(sourceState, targetstate, data);
 			}
 			public override void Exit(State sourceState, State targetstate, Dictionary<string, object> data) {
-				log.Add(id + ":exited(target:" + ((targetstate != null) ? targetstate.id : "null") + ")");
+				log.Add(id + ":exited");
 				base.Exit(sourceState, targetstate, data);
 			}
 		}
@@ -30,12 +30,26 @@ namespace UnitTesting {
 				this.id = pId;
 			}
 			public override void Enter(State sourceState, State targetstate, Dictionary<string, object> data) {
-				log.Add(id + ":entered(source:" + ((sourceState != null) ? sourceState.id : "null") + ")");
+				log.Add(id + ":entered");
 				base.Enter(sourceState, targetstate, data);
 			}
 			public override void Exit(State sourceState, State targetstate, Dictionary<string, object> data) {
 				base.Exit(sourceState, targetstate, data);
-				log.Add(id + ":exited(target:" + ((targetstate != null) ? targetstate.id : "null") + ")");
+				log.Add(id + ":exited");
+			}
+		}
+
+		public class LoggingParallel : Parallel {
+			public LoggingParallel(string pId, params StateMachine[] submachines) : base(pId, submachines) {
+				this.id = pId;
+			}
+			public override void Enter(State sourceState, State targetstate, Dictionary<string, object> data) {
+				log.Add(id + ":entered");
+				base.Enter(sourceState, targetstate, data);
+			}
+			public override void Exit(State sourceState, State targetstate, Dictionary<string, object> data) {
+				base.Exit(sourceState, targetstate, data);
+				log.Add(id + ":exited");
 			}
 		}
 
@@ -48,11 +62,12 @@ namespace UnitTesting {
 				a1, a2, a3
 			));
 
-			a1.AddHandler("T1", a2);
 			a1.AddHandler("TI", a1, TransitionKind.Internal, data => {
 				log.Add("a1:action(TI)");
 			});
 
+
+			a1.AddHandler("T1", a2);			
 			a2.AddHandler("T2", a3, TransitionKind.External, data => {
 				log.Add("a2:action(T2)");
 				sm.handleEvent("T3");
@@ -68,31 +83,29 @@ namespace UnitTesting {
 			var b2 = new LoggingSub("b2", new StateMachine(
 				b21, b22
 			));
+
+			var b311 = new LoggingState("b311");
+			var b312 = new LoggingState("b312");
+			var b321 = new LoggingState("b321");
+			var b322 = new LoggingState("b322");
+			var b3 = new LoggingParallel("b3",
+				new StateMachine(b311, b312),
+				new StateMachine(b321, b322)
+			);
 			
 			var b = new LoggingSub("b", new StateMachine(
-				b1, b2
+				b1, b2, b3
 			));
 
 			a.AddHandler("T4", b2);
 			a.AddHandler("T5", b);
-			b.AddHandler("T8", b22, TransitionKind.Local);
-			b22.AddHandler("T9", b, TransitionKind.Local);
-			
-			// Statemachine 'c'
-			var c11 = new LoggingState("c11");
-			var c12 = new LoggingState("c12");
-			
-			var c21 = new LoggingState("c21");
-			var c22 = new LoggingState("c22");
-			
-			var c = new Parallel("c",
-			    new StateMachine(c11, c12),
-			    new StateMachine(c21, c22)
-			);
+			b.AddHandler("T6", b22, TransitionKind.Local);
+			b22.AddHandler("T7", b, TransitionKind.Local);
 
-			a.AddHandler("ToB", b);
+			a1.AddHandler("T8", b322);
+			b311.AddHandler("T9", a1);
 			
-			sm = new StateMachine(a, b, c);
+			sm = new StateMachine(a, b);
 		}
 		
 		[SetUp]
@@ -107,7 +120,7 @@ namespace UnitTesting {
 		}
 
 		[Test]
-		public void Enter() {
+		public void TestEnter() {
 			Expect(sm.currentState.id, Is.EqualTo("a"));
 		}
 
@@ -131,15 +144,15 @@ namespace UnitTesting {
 
 			log.Clear();
 
-			sm.handleEvent("ToB");
+			sm.handleEvent("T5");
 			Expect(sm.currentState.id, Is.EqualTo("b"));
 			sub = sm.currentState as Sub;
 			Expect(sub._submachine.currentState.id, Is.EqualTo("b1"));
 			Expect(log, Is.EqualTo(new[] {
-				"a1:exited(target:null)",
-				"a:exited(target:b)",
-				"b:entered(source:a)",
-				"b1:entered(source:a)"
+				"a1:exited",
+				"a:exited",
+				"b:entered",
+				"b1:entered"
 			}));
 		}
 
@@ -171,32 +184,70 @@ namespace UnitTesting {
 			var sub = sm.currentState as Sub;
 			Expect(sub._submachine.currentState.id, Is.EqualTo("b1"));
 
-			
 			log.Clear();
-
-			sm.handleEvent("T8");
+			sm.handleEvent("T6");
 
 			var subsub = sub._submachine.currentState as Sub;
 			Expect(subsub._submachine.currentState.id, Is.EqualTo("b22"));
 			Expect(log, Is.EqualTo(new[] {
-				"b1:exited(target:b22)",
-				"b2:entered(source:b)",
-				"b22:entered(source:b)"
+				"b1:exited",
+				"b2:entered",
+				"b22:entered"
+			}));
+
+			log.Clear();
+
+			sm.handleEvent("T7");
+			Expect(sub._submachine.currentState.id, Is.EqualTo("b1"));
+			Expect(log, Is.EqualTo(new[] {
+				"b22:exited",
+				"b2:exited",
+				"b1:entered"
+			}));
+		}
+
+		[Test]
+		public void TestParallelStates() {
+			var sub = sm.currentState as Sub;
+			Expect(sub._submachine.currentState.id, Is.EqualTo("a1"));
+
+			log.Clear();
+
+			sm.handleEvent("T8");
+			sub = sm.currentState as Sub;
+			Expect(sub._submachine.currentState.id, Is.EqualTo("b3"));
+
+			var par = sub._submachine.currentState as Parallel;
+			Expect(par._submachines[0].currentState.id, Is.EqualTo("b311"));
+			Expect(par._submachines[1].currentState.id, Is.EqualTo("b322"));
+
+			Expect(log, Is.EqualTo(new[] {
+				"a1:exited",
+				"a:exited",
+				"b:entered",
+				"b3:entered",
+				"b311:entered",
+				"b322:entered"
 			}));
 
 			log.Clear();
 
 			sm.handleEvent("T9");
-			Expect(sub._submachine.currentState.id, Is.EqualTo("b1"));
+			sub = sm.currentState as Sub;
+			Expect(sub._submachine.currentState.id, Is.EqualTo("a1"));
+
 			Expect(log, Is.EqualTo(new[] {
-				"b22:exited(target:null)",
-				"b2:exited(target:b)",
-				"b1:entered(source:b22)"
+				"b311:exited",
+				"b322:exited",
+				"b3:exited",
+				"b:exited",
+				"a:entered",
+				"a1:entered"
 			}));
 		}
 
 		[Test]
-		public void RunToCompletion() {
+		public void TestRunToCompletion() {
 			var sub = sm.currentState as Sub;
 			Expect(sub._submachine.currentState.id, Is.EqualTo("a1"));
 
@@ -215,11 +266,11 @@ namespace UnitTesting {
 			Expect(sub._submachine.currentState.id, Is.EqualTo("a1"));
 			
 			Expect(log, Is.EqualTo(new[] {
-				"a2:exited(target:a3)",
+				"a2:exited",
 				"a2:action(T2)",
-				"a3:entered(source:a2)",
-				"a3:exited(target:a1)",
-				"a1:entered(source:a3)"
+				"a3:entered",
+				"a3:exited",
+				"a1:entered"
 				})
 			);
 
