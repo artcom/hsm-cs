@@ -1,57 +1,60 @@
 ﻿using UnityEngine;
+using System;
 using System.Collections.Generic;
 
 namespace Hsm {
 
-	[System.Serializable]
 	public class StateMachine {
-		[SerializeField]
+		public State container;
 		public List<State> states = new List<State>();
-		[SerializeField]
 		public State initialState;
-		[SerializeField]
 		public State currentState;
 
 		private bool eventInProgress = false;
 
-		// For storing incoming events.
-		struct Event {
-			public string evt;
-			public Dictionary<string, object> data;
-
-			public Event(string evt, Dictionary<string, object> data) {
-				this.evt = evt;
-				this.data = data;
-			}
-		}
 		private Queue<Event> eventQueue = new Queue<Event>();
 
 		public StateMachine(List<State> pStates) {
 			states = pStates;
+			_setOwners();
+			_setInitialState();
 		}
 
 		public StateMachine(params State[] pStates) {
 			states.AddRange(pStates);
+			_setOwners();
+			_setInitialState();
+		}
+
+		private void _setOwners() {
+			foreach (State state in states) {
+				state.owner = this;
+			}
+		}
+
+		private void _setInitialState() {
+			if (states.Count == 0) {
+				return;
+			}
+			initialState = states[0];
 		}
 
 		public void setup() {
 			if (states.Count == 0) {
 				throw new UnityException("StateMachine.setup: Must have states!");
 			}
-			if (initialState == null) {
-				initialState = states[0];
-			}
-			_enterState(null, initialState, new Dictionary<string, object>());
+			enterState(null, initialState, new Dictionary<string, object>());
 		}
 
-		public void tearDown(State nextState) {
-			currentState.Exit(nextState);
+		public void tearDown(Dictionary<string, object> data) {
+			currentState.Exit(currentState, null, data);
 			currentState = null;
 		}
 
 		public StateMachine addState(State pState) {
-			// TODO: Check if state with id already exists
 			states.Add(pState);
+			_setOwners();
+			_setInitialState();
 			return this;
 		}
 
@@ -86,27 +89,58 @@ namespace Hsm {
 				}
 			}
 			
+			if (currentState == null) {
+				return false;
+			}
 			if (!currentState.handlers.ContainsKey(evt)) {
 				return false;
 			}
-			string result = currentState.handlers[evt].Invoke(data);
-			State nextstate = states.Find(state => state.id == result);
-			if (nextstate != null) {
-				_switchState(currentState, nextstate, data);
-				return true;
+			
+			List<Handler> handlers = currentState.handlers[evt];
+			foreach (Handler handler in handlers) {
+				Transition transition = new Transition(currentState, handler);
+				if (transition.performTransition(data)) {
+					return true;
+				}
 			}
 			return false;
 		}
 
-		public void _enterState(State sourceState, State targetState, Dictionary<string, object> data) {
-			currentState = targetState;
-			targetState.Enter(sourceState, targetState, data);
+		public void switchState(State sourceState, State targetState, Action<Dictionary<string, object>> action, Dictionary<string, object> data) {
+			currentState.Exit(sourceState, targetState, data);
+			if (action != null) {
+				action.Invoke(data);
+			}
+			enterState(sourceState, targetState, data);
 		}
 
-		private void _switchState(State sourceState, State targetState, Dictionary<string, object> data) {
-			sourceState.Exit(targetState);
-			_enterState(sourceState, targetState, data);
+		public void enterState(State sourceState, State targetState, Dictionary<string, object> data) {
+			var targetPath = targetState.owner.getPath();
+			var targetLevel = targetPath.Count;
+			var thisLevel = this.getPath().Count;
+			if (targetLevel < thisLevel) {
+				currentState = initialState;
+			} else if (targetLevel == thisLevel) {
+				currentState = targetState;
+			} else {
+				currentState = targetPath[thisLevel].container;
+			}
+			currentState.Enter(sourceState, targetState, data);
 		}
+
+		public List<StateMachine> getPath() {
+			List<StateMachine> path = new List<StateMachine>();
+			StateMachine stateMachine = this;
+			while (stateMachine != null) {
+				path.Insert(0, stateMachine);
+				if (stateMachine.container == null) {
+					break;
+				}
+				stateMachine = stateMachine.container.owner;
+			}
+			return path;
+		}
+
 	}
 }
 

@@ -8,6 +8,7 @@ namespace Hsm {
 
 		public Sub(string theId, StateMachine theSubmachine) : base (theId) {
 			_submachine = theSubmachine;
+			_submachine.container = this;
 		}
 
 		public bool Handle(string evt, Dictionary<string, object> data) {
@@ -16,12 +17,12 @@ namespace Hsm {
 
 		public override void Enter(State sourceState, State targetstate, Dictionary<string, object> data) {
 			base.Enter(sourceState, targetstate, data);
-			_submachine.setup();
+			_submachine.enterState(sourceState, targetstate, data);
 		}
 
-		public override void Exit(State nextState) {
+		public override void Exit(State sourceState, State targetstate, Dictionary<string, object> data) {
 			_submachine.tearDown(null);
-			base.Exit(nextState);
+			base.Exit(sourceState, targetstate, data);
 		}
 	}
 
