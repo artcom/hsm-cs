@@ -35,18 +35,18 @@ namespace UnitTesting {
 		public void IsChainable() {
 			var state = new State("OnHold");
 			Expect(state.AddHandler("foo", null), Is.EqualTo(state));
-			Expect(state.OnEnter((s, t) => {}), Is.EqualTo(state));
-			Expect(state.OnExit(n => {}), Is.EqualTo(state));
+			Expect(state.OnEnter(() => {}), Is.EqualTo(state));
+			Expect(state.OnExit(() => {}), Is.EqualTo(state));
 		}
 
 		[Test]
 		public void EnterCallback() {
 			var state = new State("Manyfold");
 			bool called = false;
-			state.OnEnter((s, t, d) => { called = true; });
+			state.OnEnter((data) => { called = true; });
 			Expect(state.enterAction, Is.EqualTo(null));
 			Expect(state.enterActionWithData, Is.Not.EqualTo(null));
-			state.OnEnter((s, t) => { called = true; });
+			state.OnEnter(() => { called = true; });
 			Expect(state.enterActionWithData, Is.EqualTo(null));
 			Expect(state.enterAction, Is.Not.EqualTo(null));
 			state.Enter(state, state, new Dictionary<string, object>{{"value", "crocodile"}});
@@ -57,10 +57,10 @@ namespace UnitTesting {
 		public void EnterCallbackWithData() {
 			var state = new State("Manyfold");
 			string called = "";
-			state.OnEnter((s, t) => { called = "true"; });
+			state.OnEnter(() => { called = "true"; });
 			Expect(state.enterActionWithData, Is.EqualTo(null));
 			Expect(state.enterAction, Is.Not.EqualTo(null));
-			state.OnEnter((s, t, d) => { called = (string)d["value"]; });
+			state.OnEnter(data => { called = (string)data["value"]; });
 			Expect(state.enterAction, Is.EqualTo(null));
 			Expect(state.enterActionWithData, Is.Not.EqualTo(null));
 			state.Enter(state, state, new Dictionary<string, object>{{"value", "crocodile"}});
@@ -71,8 +71,8 @@ namespace UnitTesting {
 		public void ExitCallback() {
 			var state = new State("Manyfold");
 			bool called = false;
-			state.OnExit(n => { called = true; });
-			state.Exit(state);
+			state.OnExit(() => { called = true; });
+			state.Exit(state, state, null);
 			Expect(called, Is.True);
 		}
 	}

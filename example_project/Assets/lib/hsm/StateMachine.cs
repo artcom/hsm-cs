@@ -46,8 +46,8 @@ namespace Hsm {
 			enterState(null, initialState, new Dictionary<string, object>());
 		}
 
-		public void tearDown(State nextState) {
-			currentState.Exit(nextState);
+		public void tearDown(Dictionary<string, object> data) {
+			currentState.Exit(currentState, null, data);
 			currentState = null;
 		}
 
@@ -104,7 +104,7 @@ namespace Hsm {
 		}
 
 		public void switchState(State sourceState, State targetState, Action<Dictionary<string, object>> action, Dictionary<string, object> data) {
-			currentState.Exit(targetState);
+			currentState.Exit(sourceState, targetState, data);
 			if (action != null) {
 				action.Invoke(data);
 			}

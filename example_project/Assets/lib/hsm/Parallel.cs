@@ -47,11 +47,11 @@ namespace Hsm {
 			}
 		}
 		
-		public override void Exit(State nextState) {
+		public override void Exit(State sourceState, State targetstate, Dictionary<string, object> data) {
 			foreach(var submachine in _submachines) {
-				submachine.tearDown(null);
+				submachine.tearDown(data);
 			}
-			base.Exit(nextState);
+			base.Exit(sourceState, targetstate, data);
 		}
 	}
 }

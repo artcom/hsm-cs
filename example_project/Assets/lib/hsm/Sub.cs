@@ -20,9 +20,9 @@ namespace Hsm {
 			_submachine.enterState(sourceState, targetstate, data);
 		}
 
-		public override void Exit(State nextState) {
+		public override void Exit(State sourceState, State targetstate, Dictionary<string, object> data) {
 			_submachine.tearDown(null);
-			base.Exit(nextState);
+			base.Exit(sourceState, targetstate, data);
 		}
 	}
 

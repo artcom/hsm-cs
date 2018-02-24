@@ -5,20 +5,27 @@ using UnityEngine;
 namespace Hsm {
 
 	public static class ExtensionMethods {
-		public static T OnExit<T>(this T state, Action<State> action) where T : State {
-			state.exitAction = action;
-			return state;
-		}
-
-		public static T OnEnter<T>(this T state, Action<State, State> action) where T : State {
+		public static T OnEnter<T>(this T state, Action action) where T : State {
 			state.enterAction = action;
 			state.enterActionWithData = null;
 			return state;
 		}
 
-		public static T OnEnter<T>(this T state, Action<State, State, Dictionary<string, object>> action) where T : State {
+		public static T OnEnter<T>(this T state, Action<Dictionary<string, object>> action) where T : State {
 			state.enterActionWithData = action;
 			state.enterAction = null;
+			return state;
+		}
+
+		public static T OnExit<T>(this T state, Action action) where T : State {
+			state.exitAction = action;
+			state.exitActionWithData = null;
+			return state;
+		}
+
+		public static T OnExit<T>(this T state, Action<Dictionary<string, object>> action) where T : State {
+			state.exitActionWithData = action;
+			state.exitAction = null;
 			return state;
 		}
 
@@ -47,9 +54,10 @@ namespace Hsm {
 		[SerializeField]
 		public string id;
 		public StateMachine owner;
-		public Action<State, State> enterAction = null;
-		public Action<State, State, Dictionary<string, object>> enterActionWithData = null;
-		public Action<State> exitAction = null;
+		public Action enterAction = null;
+		public Action<Dictionary<string, object>> enterActionWithData = null;
+		public Action exitAction = null;
+		public Action<Dictionary<string, object>> exitActionWithData = null;
 		public Dictionary<string, List<Handler>> handlers = new Dictionary<string, List<Handler>>();
 
 		public State(string pId) {
@@ -58,16 +66,19 @@ namespace Hsm {
 
 		public virtual void Enter(State sourceState, State targetstate, Dictionary<string, object> data) {
 			if (enterAction != null) {
-				enterAction.Invoke(sourceState, targetstate);
+				enterAction.Invoke();
 			}
 			if (enterActionWithData != null) {
-				enterActionWithData.Invoke(sourceState, targetstate, data);
+				enterActionWithData.Invoke(data);
 			}
 		}
 		
-		public virtual void Exit(State nextState) {
+		public virtual void Exit(State sourceState, State targetstate, Dictionary<string, object> data) {
 			if (exitAction != null) {
-				exitAction.Invoke(nextState);
+				exitAction.Invoke();
+			}
+			if (exitActionWithData != null) {
+				exitActionWithData.Invoke(data);
 			}
 		}
 
