@@ -118,7 +118,7 @@ Transition can be guarded by a specified condition:
 c11.AddHandler("T5", c12, data => {
     return (data["v"] == null);
 });
-c11.AddHandler("T5", c12, data => {
+c21.AddHandler("T5", c22, data => {
     return (data["v"] != null);
 });
 ```
