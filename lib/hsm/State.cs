@@ -30,22 +30,37 @@ namespace Hsm {
 		}
 
 		public static T AddHandler<T>(this T state, string eventName, State target) where T : State {
-			state.createHandler(eventName, target, TransitionKind.External, null);
+			state.createHandler(eventName, target, TransitionKind.External, null, null);
 			return state;
 		}
 
 		public static T AddHandler<T>(this T state, string eventName, State target, TransitionKind kind) where T : State {
-			state.createHandler(eventName, target, kind, null);
+			state.createHandler(eventName, target, kind, null, null);
 			return state;
 		}
 
 		public static T AddHandler<T>(this T state, string eventName, State target, Action<Dictionary<string, object>> action) where T : State {
-			state.createHandler(eventName, target, TransitionKind.External, action);
+			state.createHandler(eventName, target, TransitionKind.External, action, null);
 			return state;
 		}
 
 		public static T AddHandler<T>(this T state, string eventName, State target, TransitionKind kind, Action<Dictionary<string, object>> action) where T : State {
-			state.createHandler(eventName, target, kind, action);
+			state.createHandler(eventName, target, kind, action, null);
+			return state;
+		}
+
+		public static T AddHandler<T>(this T state, string eventName, State target, Func<Dictionary<string, object>, bool> guard) where T : State {
+			state.createHandler(eventName, target, TransitionKind.External, null, guard);
+			return state;
+		}
+
+		public static T AddHandler<T>(this T state, string eventName, State target, TransitionKind kind, Func<Dictionary<string, object>, bool> guard) where T : State {
+			state.createHandler(eventName, target, kind, null, guard);
+			return state;
+		}
+
+		public static T AddHandler<T>(this T state, string eventName, State target, TransitionKind kind, Action<Dictionary<string, object>> action, Func<Dictionary<string, object>, bool> guard) where T : State {
+			state.createHandler(eventName, target, kind, action, guard);
 			return state;
 		}
 	}
@@ -82,8 +97,8 @@ namespace Hsm {
 			}
 		}
 
-		public void createHandler(string eventName, State target, TransitionKind kind, Action<Dictionary<string, object>> action) {
-			Handler handler = new Handler(target, kind, action);
+		public void createHandler(string eventName, State target, TransitionKind kind, Action<Dictionary<string, object>> action, Func<Dictionary<string, object>, bool> guard) {
+			Handler handler = new Handler(target, kind, action, guard);
 			if (!handlers.ContainsKey(eventName)) {
 				handlers[eventName] = new List<Handler>();
 			}

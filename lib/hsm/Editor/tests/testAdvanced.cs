@@ -113,6 +113,13 @@ namespace UnitTesting {
 			b321.AddHandler("T11", b321, TransitionKind.Internal, data => {
 				log.Add("b321:action(T11)");
 			});
+
+			b311.AddHandler("T12", b312, data => {
+				return (data["v"] == null);
+			});
+			b321.AddHandler("T12", b322, data => {
+				return (data["v"] != null);
+			});
 			
 			sm = new StateMachine(a, b);
 		}
@@ -267,6 +274,32 @@ namespace UnitTesting {
 				"b:exited",
 				"a:entered",
 				"a1:entered"
+			}));
+		}
+
+		[Test]
+		public void TestParallelStatesGuarded() {
+			sm.handleEvent("T10");
+			var sub = sm.currentState as Sub;
+			Expect(sub._submachine.currentState.id, Is.EqualTo("b3"));
+
+			var par = sub._submachine.currentState as Parallel;
+			Expect(par._submachines[0].currentState.id, Is.EqualTo("b311"));
+			Expect(par._submachines[1].currentState.id, Is.EqualTo("b321"));
+			
+			log.Clear();
+
+			Dictionary<string, object> data = new Dictionary<string, object>
+			{
+				{"v", "foobar"}
+			};
+			sm.handleEvent("T12", data);
+			Expect(par._submachines[0].currentState.id, Is.EqualTo("b311"));
+			Expect(par._submachines[1].currentState.id, Is.EqualTo("b322"));
+
+			Expect(log, Is.EqualTo(new[] {
+				"b321:exited",
+				"b322:entered"
 			}));
 		}
 

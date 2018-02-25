@@ -110,6 +110,21 @@ a3.AddHandler("T3", a2); // external by default
 a3.AddHandler("T3", a2, Transition.External);
 ```
 
+## Guard Conditions
+
+Transition can be guarded by a specified condition:
+
+```cs
+c11.AddHandler("T5", c12, data => {
+    return (data["v"] == null);
+});
+c11.AddHandler("T5", c12, data => {
+    return (data["v"] != null);
+});
+```
+
+![image](doc/exports/simpleParallelGuarded.png)
+
 ## Sub-StateMachines (nested)
 
 StateMachines can be nested in other state machines by using the `Hsm.Sub` adapter class.
@@ -154,10 +169,6 @@ Parallel c = new Parallel("c",
 ```
 
 For more details on how to construct a Hsm.Parallel consult the [tests](lib/hsm/Editor/tests/testParallel.cs).
-
-## Guard Conditions (not implemented)
-
-Guard Conditions are currently not implemented. If you need to use guard conditions your state machine model is probably incomplete because guards check on things that are outside of your state model.
 
 ## Development Setup
 

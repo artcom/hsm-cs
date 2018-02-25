@@ -10,15 +10,20 @@ namespace Hsm {
 		private State targetState;
 		private TransitionKind kind;
 		private Action<Dictionary<string, object>> action;
+		private Func<Dictionary<string, object>, bool> guard;
 
 		public Transition (State sourceState, Handler handler) {
 			this.sourceState = sourceState;
 			this.targetState = handler.targetState;
 			this.kind = handler.kind;
 			this.action = handler.action;
+			this.guard = handler.guard;
 		}
 
 		public bool performTransition(Dictionary<string, object> data) {
+			if (!_canPerformTransition(data)) {
+				return false;
+			}
 			if (kind == TransitionKind.Internal) {
 				return _performInternalTransition(data);
 			} else {
@@ -40,6 +45,10 @@ namespace Hsm {
 				action.Invoke(data);
 			}
 			return true;
+		}
+
+		private bool _canPerformTransition(Dictionary<string, object> data) {
+			return (guard == null || guard.Invoke(data));
 		}
 
 		private StateMachine _findLeastCommonAncestor() {
