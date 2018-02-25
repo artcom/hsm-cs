@@ -26,9 +26,32 @@ namespace Hsm {
 			}
 			if (kind == TransitionKind.Internal) {
 				return _performInternalTransition(data);
+			} else if (kind == TransitionKind.Local) {
+				return _performLocalTransition(data);
 			} else {
 				return _performExternalTransition(data);
 			}
+		}
+
+		private bool _performInternalTransition(Dictionary<string, object> data) {
+			if (action != null) {
+				action.Invoke(data);
+			}
+			return true;
+		}
+
+		private bool _performLocalTransition(Dictionary<string, object> data) {
+			if (targetState == null) {
+				return false;
+			}
+			if (!sourceState.hasAncestor(targetState) && !targetState.hasAncestor(sourceState)) {
+				return false;
+			}
+			StateMachine lca = _findLeastCommonAncestor();
+			Sub containingSubState = lca.currentState as Sub;
+			lca = containingSubState._submachine;
+			lca.switchState(sourceState, targetState, action, data);
+			return true;
 		}
 
 		private bool _performExternalTransition(Dictionary<string, object> data) {
@@ -37,13 +60,6 @@ namespace Hsm {
 			}
 			StateMachine lca = _findLeastCommonAncestor();
 			lca.switchState(sourceState, targetState, action, data);
-			return true;
-		}
-
-		private bool _performInternalTransition(Dictionary<string, object> data) {
-			if (action != null) {
-				action.Invoke(data);
-			}
 			return true;
 		}
 
@@ -61,12 +77,6 @@ namespace Hsm {
 				if (targetPath.Contains(stateMachine)) {
 					lca = stateMachine;
 					break;
-				}
-			}
-			if (kind == TransitionKind.Local) {
-				if (sourceState.hasAncestor(targetState) || targetState.hasAncestor(sourceState)) {
-					Sub containingSubState = lca.currentState as Sub;
-					lca = containingSubState._submachine;
 				}
 			}
 			return lca;
