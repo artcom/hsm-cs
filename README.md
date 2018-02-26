@@ -96,7 +96,7 @@ External, internal and local transitions can be selected by using the `Transitio
 
 ```cs
 a.AddHandler("T4", a2, Transition.Local);
-a3.AddHandler("TI", a1, Transition.Internal, data => {
+a1.AddHandler("TI", a1, Transition.Internal, data => {
     // ...
 });
 ```
@@ -129,7 +129,7 @@ c21.AddHandler("T5", c22, data => {
 
 StateMachines can be nested in other state machines by using the `Hsm.Sub` adapter class.
 
-All events are propagated into the sub-state machines, and the sub state machine is initialed and torn down on enter/exit of its containing state.
+All events are propagated into the sub-state machines, and the sub state machine is initialized and torn down on enter/exit of its containing state.
 
 ![image](doc/exports/simpleSub.png)
 
@@ -149,7 +149,7 @@ For more details on how to construct a Hsm.Sub consult the [tests](lib/hsm/Edito
 
 Parallel state machines are constructed with the Hsm.Parallel adapter class.
 
-All events are propagated to all contained orthogonal state machines contained in the Hsm.Parallel. An events is treated as handled as soon as one of those state machines handles an event (returns `true`).
+All events are propagated to all orthogonal state machines contained in the Hsm.Parallel. An event is treated as handled as soon as one of those state machines handles an event (returns `true`).
 
 ![image](doc/exports/simpleParallel.png)
 
