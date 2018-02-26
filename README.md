@@ -1,4 +1,4 @@
-# HSM for Unity3d/C#
+# HSM for Unity
 
 ## General
 
@@ -12,9 +12,9 @@ To install this library add `hsm` to your `bower.json` file and run `bower insta
 
 ## States and State Machines
 
-![image](doc/exports/simple.png)
-
 ### Setup
+
+![image](doc/exports/simple.png)
 
 Import the hsm:
 
@@ -22,7 +22,7 @@ Import the hsm:
 using hsm;
 ```
 
-States are specific by creating `Hsm.State` instances. They are then passed to the `Hsm.StateMachine` constructor. By Convention, the first state passed is the initial state:
+States are specific by creating `Hsm.State` instances. They are then passed to the `Hsm.StateMachine` constructor. By convention, the first state passed is the initial state:
 
 ```cs
 State a1 = new State("a1");
