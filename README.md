@@ -163,6 +163,14 @@ Parallel c = new Parallel("c",
 );
 ```
 
+## Debugging
+
+To get the current active state configuration call:
+
+```cs
+List<string> = sm.getActiveStateConfiguration();
+```
+
 ## Development Setup
 
 To run the test suite:

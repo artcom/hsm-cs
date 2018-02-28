@@ -24,6 +24,10 @@ namespace Hsm {
 			_submachine.tearDown(null);
 			base.Exit(sourceState, targetstate, data);
 		}
+
+		public List<string> getActiveStateConfiguration() {
+            return _submachine.getActiveStateConfiguration();
+        }
 	}
 
 }

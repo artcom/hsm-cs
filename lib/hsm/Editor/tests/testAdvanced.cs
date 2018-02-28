@@ -154,6 +154,14 @@ namespace UnitTesting {
 		}
 
 		[Test]
+		public void TestActiveStateConfiguration() {
+			List<string> activeStates = sm.getActiveStateConfiguration();
+			Expect(activeStates.Count, Is.EqualTo(2));
+			Expect(activeStates[0], Is.EqualTo("a"));		
+			Expect(activeStates[1], Is.EqualTo("a1"));		
+		}
+
+		[Test]
 		public void TestExit() {
 			var sub = sm.currentState as Sub;
 			Expect(sub._submachine.currentState.id, Is.EqualTo("a1"));

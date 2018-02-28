@@ -53,5 +53,13 @@ namespace Hsm {
 			}
 			base.Exit(sourceState, targetstate, data);
 		}
+
+		public List<string> getActiveStateConfiguration() {
+            List<string> states = new List<string>();
+            foreach(var submachine in _submachines) {
+                states.AddRange(submachine.getActiveStateConfiguration());
+            }
+            return states;
+    	}
 	}
 }

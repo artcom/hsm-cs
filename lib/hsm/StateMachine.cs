@@ -141,6 +141,16 @@ namespace Hsm {
 			return path;
 		}
 
+		public List<string> getActiveStateConfiguration() {
+			List<string> states = new List<string>();
+			states.Add(currentState.id);
+			if (currentState is INestedState) {
+				INestedState nested = currentState as INestedState;
+				states.AddRange(nested.getActiveStateConfiguration());
+			}
+			return states;
+		}
+
 	}
 }
 
