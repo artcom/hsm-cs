@@ -65,18 +65,19 @@ namespace Hsm {
 		public void handleEvent(string evt, Dictionary<string, object> data) {
 			Event myEvent = new Event(evt, data);
 			eventQueue.Enqueue(myEvent);
-			if (eventInProgress == true) {
-				// EnQueue
-			} else {
-				// DeQueue
-				eventInProgress = true;
-				Event curEvent;
-				while (eventQueue.Count > 0) {
-					curEvent = eventQueue.Dequeue();
-					Handle(curEvent.evt, curEvent.data);
-				}
-				eventInProgress = false;
+			
+			// process the next event only if no other event is currently processed
+			// to not interfere with the run-to-completion model.
+			if (eventInProgress) {
+				return;
 			}
+			eventInProgress = true;
+			Event curEvent;
+			while (eventQueue.Count > 0) {
+				curEvent = eventQueue.Dequeue();
+				Handle(curEvent.evt, curEvent.data);
+			}
+			eventInProgress = false;
 		}
 
 		public bool Handle(string evt, Dictionary<string, object> data) {
