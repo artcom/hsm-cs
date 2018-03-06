@@ -57,7 +57,7 @@ namespace UnitTesting {
 		public void EnterCallbackWithData() {
 			var state = new State("Manyfold");
 			string called = "";
-			state.OnEnter(() => { called = "true"; });
+			state.OnEnter((s, t, d) => { called = "true"; });
 			Expect(state.enterActionWithData, Is.EqualTo(null));
 			Expect(state.enterAction, Is.Not.EqualTo(null));
 			state.OnEnter(data => { called = (string)data["value"]; });
@@ -71,7 +71,7 @@ namespace UnitTesting {
 		public void ExitCallback() {
 			var state = new State("Manyfold");
 			bool called = false;
-			state.OnExit(() => { called = true; });
+			state.OnExit((s, t, d) => { called = true; });
 			state.Exit(state, state, null);
 			Expect(called, Is.True);
 		}

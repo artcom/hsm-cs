@@ -17,6 +17,13 @@ namespace Hsm {
 			return state;
 		}
 
+		public static T OnEnter<T>(this T state, Action<State, State, Dictionary<string, object>> action) where T : State {
+			state.enterActionWithStatesAndData = action;
+			state.enterActionWithData = null;
+			state.enterAction = null;
+			return state;
+		}
+
 		public static T OnExit<T>(this T state, Action action) where T : State {
 			state.exitAction = action;
 			state.exitActionWithData = null;
@@ -29,6 +36,13 @@ namespace Hsm {
 			return state;
 		}
 
+		public static T OnExit<T>(this T state, Action<State, State, Dictionary<string, object>> action) where T : State {
+			state.exitActionWithStatesAndData = action;
+			state.exitActionWithData = null;
+			state.exitAction = null;
+			return state;
+		}
+		
 		public static T AddHandler<T>(this T state, string eventName, State target) where T : State {
 			state.createHandler(eventName, target, TransitionKind.External, null, null);
 			return state;
@@ -71,8 +85,10 @@ namespace Hsm {
 		public StateMachine owner;
 		public Action enterAction = null;
 		public Action<Dictionary<string, object>> enterActionWithData = null;
+		public Action<State, State, Dictionary<string, object>> enterActionWithStatesAndData = null;
 		public Action exitAction = null;
 		public Action<Dictionary<string, object>> exitActionWithData = null;
+		public Action<State, State, Dictionary<string, object>> exitActionWithStatesAndData = null;
 		public Dictionary<string, List<Handler>> handlers = new Dictionary<string, List<Handler>>();
 
 		public State(string pId) {
@@ -86,6 +102,9 @@ namespace Hsm {
 			if (enterActionWithData != null) {
 				enterActionWithData.Invoke(data);
 			}
+			if (enterActionWithStatesAndData != null) {
+				enterActionWithStatesAndData.Invoke(sourceState, targetstate, data);
+			}
 		}
 		
 		public virtual void Exit(State sourceState, State targetstate, Dictionary<string, object> data) {
@@ -94,6 +113,9 @@ namespace Hsm {
 			}
 			if (exitActionWithData != null) {
 				exitActionWithData.Invoke(data);
+			}
+			if (exitActionWithStatesAndData != null) {
+				exitActionWithStatesAndData.Invoke(sourceState, targetstate, data);
 			}
 		}
 

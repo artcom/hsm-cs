@@ -84,6 +84,18 @@ State a = new State("a")
 });
 ```
 
+Optionally you can receive source and target state as well:
+
+```cs
+State a = new State("a")
+.OnEnter((source, target, data) => {
+    // your code here
+})
+.OnExit((source, target, data) => {
+    // your code here
+});
+```
+
 ## Actions and State Transitions
 
 ![image](doc/exports/simpleWithTransition.png)
