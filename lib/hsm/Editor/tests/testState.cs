@@ -43,12 +43,12 @@ namespace UnitTesting {
 		public void EnterCallback() {
 			var state = new State("Manyfold");
 			bool called = false;
-			state.OnEnter((data) => { called = true; });
-			Expect(state.enterAction, Is.EqualTo(null));
-			Expect(state.enterActionWithData, Is.Not.EqualTo(null));
+			
 			state.OnEnter(() => { called = true; });
-			Expect(state.enterActionWithData, Is.EqualTo(null));
 			Expect(state.enterAction, Is.Not.EqualTo(null));
+			Expect(state.enterActionWithData, Is.EqualTo(null));
+			Expect(state.enterActionWithStatesAndData, Is.EqualTo(null));
+			
 			state.Enter(state, state, new Dictionary<string, object>{{"value", "crocodile"}});
 			Expect(called, Is.True);
 		}
@@ -57,12 +57,26 @@ namespace UnitTesting {
 		public void EnterCallbackWithData() {
 			var state = new State("Manyfold");
 			string called = "";
-			state.OnEnter((s, t, d) => { called = "true"; });
-			Expect(state.enterActionWithData, Is.EqualTo(null));
-			Expect(state.enterAction, Is.Not.EqualTo(null));
+
 			state.OnEnter(data => { called = (string)data["value"]; });
 			Expect(state.enterAction, Is.EqualTo(null));
 			Expect(state.enterActionWithData, Is.Not.EqualTo(null));
+			Expect(state.enterActionWithStatesAndData, Is.EqualTo(null));
+
+			state.Enter(state, state, new Dictionary<string, object>{{"value", "crocodile"}});
+			Expect(called, Is.EqualTo("crocodile"));
+		}
+
+		[Test]
+		public void EnterCallbackWithStatesAndData() {
+			var state = new State("Manyfold");
+			string called = "";
+			
+			state.OnEnter((source, target, data) => { called = (string)data["value"]; });
+			Expect(state.enterAction, Is.EqualTo(null));
+			Expect(state.enterActionWithData, Is.EqualTo(null));
+			Expect(state.enterActionWithStatesAndData, Is.Not.EqualTo(null));
+
 			state.Enter(state, state, new Dictionary<string, object>{{"value", "crocodile"}});
 			Expect(called, Is.EqualTo("crocodile"));
 		}
@@ -71,7 +85,7 @@ namespace UnitTesting {
 		public void ExitCallback() {
 			var state = new State("Manyfold");
 			bool called = false;
-			state.OnExit((s, t, d) => { called = true; });
+			state.OnExit(() => { called = true; });
 			state.Exit(state, state, null);
 			Expect(called, Is.True);
 		}
