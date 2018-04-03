@@ -21,7 +21,7 @@ namespace Hsm {
 		}
 
 		public override void Exit(State sourceState, State targetstate, Dictionary<string, object> data) {
-			_submachine.tearDown(null);
+			_submachine.tearDown(data);
 			base.Exit(sourceState, targetstate, data);
 		}
 

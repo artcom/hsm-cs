@@ -16,11 +16,19 @@ namespace UnitTesting {
 				this.id = pId;
 			}
 			public override void Enter(State sourceState, State targetstate, Dictionary<string, object> data) {
-				log.Add(id + ":entered");
+				string s = id + ":entered";
+				if (data != null && data.ContainsKey("foo")) {
+					s += " (" + data["foo"] + ")";
+				}
+				log.Add(s);
 				base.Enter(sourceState, targetstate, data);
 			}
 			public override void Exit(State sourceState, State targetstate, Dictionary<string, object> data) {
-				log.Add(id + ":exited");
+				string s = id + ":exited";
+				if (data != null && data.ContainsKey("foo")) {
+					s += " (" + data["foo"] + ")";
+				}
+				log.Add(s);
 				base.Exit(sourceState, targetstate, data);
 			}
 		}
@@ -30,12 +38,20 @@ namespace UnitTesting {
 				this.id = pId;
 			}
 			public override void Enter(State sourceState, State targetstate, Dictionary<string, object> data) {
-				log.Add(id + ":entered");
+				string s = id + ":entered";
+				if (data != null && data.ContainsKey("foo")) {
+					s += " (" + data["foo"] + ")";
+				}
+				log.Add(s);
 				base.Enter(sourceState, targetstate, data);
 			}
 			public override void Exit(State sourceState, State targetstate, Dictionary<string, object> data) {
 				base.Exit(sourceState, targetstate, data);
-				log.Add(id + ":exited");
+				string s = id + ":exited";
+				if (data != null && data.ContainsKey("foo")) {
+					s += " (" + data["foo"] + ")";
+				}
+				log.Add(s);
 			}
 		}
 
@@ -44,12 +60,20 @@ namespace UnitTesting {
 				this.id = pId;
 			}
 			public override void Enter(State sourceState, State targetstate, Dictionary<string, object> data) {
-				log.Add(id + ":entered");
+				string s = id + ":entered";
+				if (data != null && data.ContainsKey("foo")) {
+					s += " (" + data["foo"] + ")";
+				}
+				log.Add(s);
 				base.Enter(sourceState, targetstate, data);
 			}
 			public override void Exit(State sourceState, State targetstate, Dictionary<string, object> data) {
 				base.Exit(sourceState, targetstate, data);
-				log.Add(id + ":exited");
+				string s = id + ":exited";
+				if (data != null && data.ContainsKey("foo")) {
+					s += " (" + data["foo"] + ")";
+				}
+				log.Add(s);
 			}
 		}
 
@@ -168,15 +192,17 @@ namespace UnitTesting {
 
 			log.Clear();
 
-			sm.handleEvent("T5");
+			Dictionary<string, object> data = new Dictionary<string, object>();
+			data["foo"] = "bar";
+			sm.handleEvent("T5", data);
 			Expect(sm.currentState.id, Is.EqualTo("b"));
 			sub = sm.currentState as Sub;
 			Expect(sub._submachine.currentState.id, Is.EqualTo("b1"));
 			Expect(log, Is.EqualTo(new[] {
-				"a1:exited",
-				"a:exited",
-				"b:entered",
-				"b1:entered"
+				"a1:exited (bar)",
+				"a:exited (bar)",
+				"b:entered (bar)",
+				"b1:entered (bar)"
 			}));
 		}
 
@@ -252,7 +278,10 @@ namespace UnitTesting {
 
 			log.Clear();
 
-			sm.handleEvent("T8");
+			Dictionary<string, object> data = new Dictionary<string, object>();
+			data["foo"] = "bar";
+			sm.handleEvent("T8", data);
+			
 			sub = sm.currentState as Sub;
 			Expect(sub._submachine.currentState.id, Is.EqualTo("b3"));
 
@@ -261,12 +290,12 @@ namespace UnitTesting {
 			Expect(par._submachines[1].currentState.id, Is.EqualTo("b322"));
 
 			Expect(log, Is.EqualTo(new[] {
-				"a1:exited",
-				"a:exited",
-				"b:entered",
-				"b3:entered",
-				"b311:entered",
-				"b322:entered"
+				"a1:exited (bar)",
+				"a:exited (bar)",
+				"b:entered (bar)",
+				"b3:entered (bar)",
+				"b311:entered (bar)",
+				"b322:entered (bar)"
 			}));
 
 			log.Clear();

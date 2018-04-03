@@ -42,7 +42,7 @@ namespace Hsm {
 				if (targetstate.hasAncestorStateMachine(submachine)) {
 					submachine.enterState(sourceState, targetstate, data);
 				} else {
-					submachine.setup();
+					submachine.setup(data);
 				}
 			}
 		}

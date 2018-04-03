@@ -40,10 +40,14 @@ namespace Hsm {
 		}
 
 		public void setup() {
+			setup(null);
+		}
+
+		public void setup(Dictionary<string, object> data) {
 			if (states.Count == 0) {
 				throw new UnityException("StateMachine.setup: Must have states!");
 			}
-			enterState(null, initialState, new Dictionary<string, object>());
+			enterState(null, initialState, data);
 		}
 
 		public void tearDown(Dictionary<string, object> data) {
@@ -59,7 +63,7 @@ namespace Hsm {
 		}
 
 		public void handleEvent(string evt) {
-			handleEvent(evt, new Dictionary<string, object>());
+			handleEvent(evt, null);
 		}
 
 		public void handleEvent(string evt, Dictionary<string, object> data) {
